@@ -7,6 +7,8 @@ public class PlayerMove : MonoBehaviour
 {
     [SerializeField, Range(0.0f, 40.0f)]
     private float m_Speed = 10.0f;
+    [SerializeField, Range(1.0f, 5.0f)]
+    private float m_SprintSpeed = 1.8f;
     [SerializeField, Range(0.0f, 30.0f)]
     private float m_JumpHeight = 4.3f;
     [SerializeField, Range(-30.0f, 0.0f)]
@@ -19,6 +21,8 @@ public class PlayerMove : MonoBehaviour
 
     private bool m_CanJump = true;
     private float m_DistToGround = 0.0f;
+
+    private float m_DefaultSpeed = 0.0f;
 
     private float horiz = 0.0f;
     private float verti = 0.0f;
@@ -33,6 +37,8 @@ public class PlayerMove : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        m_DefaultSpeed = m_Speed;
     }
 
     private void Update()
@@ -41,6 +47,15 @@ public class PlayerMove : MonoBehaviour
         {
             m_Velocity.y = Mathf.Sqrt(m_JumpHeight * -2.0f * m_GravityStrength);
             m_CanJump = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            m_Speed = m_DefaultSpeed * m_SprintSpeed;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            m_Speed = m_DefaultSpeed;
         }
 
         horiz = Input.GetAxis("Horizontal");
