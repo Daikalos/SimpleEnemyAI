@@ -1101,7 +1101,7 @@ Transform:
   - {fileID: 281540433}
   - {fileID: 759952816}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1073159686
 PrefabInstance:
@@ -1152,7 +1152,7 @@ PrefabInstance:
     - target: {fileID: 8037875044159943521, guid: ddc1e13d5f89ec14cb0c679b7f0db897,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8037875044159943521, guid: ddc1e13d5f89ec14cb0c679b7f0db897,
         type: 3}
@@ -2215,7 +2215,7 @@ PrefabInstance:
     - target: {fileID: 2798254540567544352, guid: f5e4afb45684ecf45a7e6dca74c24fba,
         type: 3}
       propertyPath: m_Name
-      value: AI_Enemy_Fuzzy
+      value: AI_Enemy_FuSM
       objectReference: {fileID: 0}
     - target: {fileID: 2798254540567544367, guid: f5e4afb45684ecf45a7e6dca74c24fba,
         type: 3}
@@ -2336,7 +2336,7 @@ PrefabInstance:
     - target: {fileID: 4288633269341112639, guid: 8606dcd8c72371747bee71caa10f2477,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4288633269341112639, guid: 8606dcd8c72371747bee71caa10f2477,
         type: 3}
@@ -2412,7 +2412,7 @@ PrefabInstance:
     - target: {fileID: 4800479570394642043, guid: fcd5c97787f660e49a2369b6138e41b1,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4800479570394642043, guid: fcd5c97787f660e49a2369b6138e41b1,
         type: 3}
@@ -2432,7 +2432,7 @@ PrefabInstance:
     - target: {fileID: 4800479570394642047, guid: fcd5c97787f660e49a2369b6138e41b1,
         type: 3}
       propertyPath: m_Name
-      value: AI_Enemy_Finite
+      value: AI_Enemy_FSM
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcd5c97787f660e49a2369b6138e41b1, type: 3}
@@ -2455,6 +2455,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 347888488, guid: 4550eaa612c471e46a67c441a4025aed, type: 3}
+      propertyPath: m_Name
+      value: FSM_HP_Text
+      objectReference: {fileID: 0}
     - target: {fileID: 347888489, guid: 4550eaa612c471e46a67c441a4025aed, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 200.13
@@ -2467,6 +2471,10 @@ PrefabInstance:
       propertyPath: m_Enemy
       value: 
       objectReference: {fileID: 4800479571119139464}
+    - target: {fileID: 1173005705, guid: 4550eaa612c471e46a67c441a4025aed, type: 3}
+      propertyPath: m_Name
+      value: BT_HP_Text
+      objectReference: {fileID: 0}
     - target: {fileID: 1173005706, guid: 4550eaa612c471e46a67c441a4025aed, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 200.13
@@ -2487,6 +2495,10 @@ PrefabInstance:
       propertyPath: m_Enemy
       value: 
       objectReference: {fileID: 4288633267814967093}
+    - target: {fileID: 1640178991, guid: 4550eaa612c471e46a67c441a4025aed, type: 3}
+      propertyPath: m_Name
+      value: FuSM_HP_Text
+      objectReference: {fileID: 0}
     - target: {fileID: 1640178992, guid: 4550eaa612c471e46a67c441a4025aed, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 200.13
@@ -2632,10 +2644,15 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 389.99768
       objectReference: {fileID: 0}
+    - target: {fileID: 7972150004276550172, guid: 4550eaa612c471e46a67c441a4025aed,
+        type: 3}
+      propertyPath: m_Name
+      value: BT_Text
+      objectReference: {fileID: 0}
     - target: {fileID: 7972150004360373852, guid: 4550eaa612c471e46a67c441a4025aed,
         type: 3}
       propertyPath: m_Text
-      value: " Fuzzy  (blue)   \t    HP"
+      value: " FuSM  (blue)   \t    HP"
       objectReference: {fileID: 0}
     - target: {fileID: 7972150004360373853, guid: 4550eaa612c471e46a67c441a4025aed,
         type: 3}
@@ -2647,10 +2664,15 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 389.99628
       objectReference: {fileID: 0}
+    - target: {fileID: 7972150004360373854, guid: 4550eaa612c471e46a67c441a4025aed,
+        type: 3}
+      propertyPath: m_Name
+      value: FuSM_Text
+      objectReference: {fileID: 0}
     - target: {fileID: 7972150004530285515, guid: 4550eaa612c471e46a67c441a4025aed,
         type: 3}
       propertyPath: m_Text
-      value: " Finite   (yellow)      \tHP"
+      value: " FSM   \t(yellow)      \tHP"
       objectReference: {fileID: 0}
     - target: {fileID: 7972150004530285516, guid: 4550eaa612c471e46a67c441a4025aed,
         type: 3}
@@ -2661,6 +2683,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 389.99707
+      objectReference: {fileID: 0}
+    - target: {fileID: 7972150004530285517, guid: 4550eaa612c471e46a67c441a4025aed,
+        type: 3}
+      propertyPath: m_Name
+      value: FSM_Text
       objectReference: {fileID: 0}
     - target: {fileID: 7972150004534036974, guid: 4550eaa612c471e46a67c441a4025aed,
         type: 3}

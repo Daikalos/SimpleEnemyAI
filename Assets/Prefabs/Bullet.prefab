@@ -50,7 +50,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: e60861ea5d48f2440a5cf8193e2e9901, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -149,10 +149,11 @@ GameObject:
   - component: {fileID: 2481879445311111698}
   - component: {fileID: 2481879445310111954}
   - component: {fileID: 7773815539315174307}
+  - component: {fileID: 6733983151067391683}
   - component: {fileID: 1219028912042398259}
   m_Layer: 2
   m_Name: Bullet
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -235,6 +236,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!65 &6733983151067391683
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2481879445312314898}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2, y: 0.15, z: 0.5}
+  m_Center: {x: -0.000000007450581, y: 0, z: 0.011420853}
 --- !u!114 &1219028912042398259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,4 +261,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c231ef0ce93b5243821bf290ad0cbbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Speed: 1600
+  m_Speed: 800

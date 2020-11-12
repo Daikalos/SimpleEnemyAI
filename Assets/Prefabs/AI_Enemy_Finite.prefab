@@ -242,3 +242,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Health: 5
+  m_ViewRange: 10
+  m_ViewAngle: 0.5

@@ -7,17 +7,17 @@ namespace Finite_SM
 
     public class Flee : State
     {
-        public override void Enter(Finite_SM_Context context)
+        public override void Enter(FSM_Context context)
         {
 
         }
 
-        public override void Update(Finite_SM_Context context)
+        public override void Update(FSM_Context context)
         {
 
         }
 
-        public override void Exit(Finite_SM_Context context)
+        public override void Exit(FSM_Context context)
         {
 
         }
