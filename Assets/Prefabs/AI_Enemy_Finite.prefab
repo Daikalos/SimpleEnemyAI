@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375697778}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.498, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.496}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1633120168}
@@ -56,8 +56,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633120167}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.184, y: 0.056, z: -0.59}
-  m_LocalScale: {x: 0.52378005, y: 0.1323572, z: 0.12025005}
+  m_LocalPosition: {x: 0.591, y: 0.056, z: 0.238}
+  m_LocalScale: {x: 0.13741894, y: 0.1323572, z: 0.78690434}
   m_Children:
   - {fileID: 1375697779}
   m_Father: {fileID: 4800479570394642043}
@@ -123,9 +123,10 @@ GameObject:
   - component: {fileID: 4800479570394642045}
   - component: {fileID: 4800479570394642044}
   - component: {fileID: 4800479570394642040}
+  - component: {fileID: 4800479571119139464}
   m_Layer: 0
   m_Name: AI_Enemy_Finite
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -228,3 +229,16 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &4800479571119139464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4800479570394642047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b84d507914ba61b469f6b6641229261b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Health: 5
