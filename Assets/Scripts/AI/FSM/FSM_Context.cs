@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace FSM
 {
@@ -17,6 +17,10 @@ namespace FSM
         private float m_AttackRange = 5.0f;
         [SerializeField, Range(0.0f, 5.0f)]
         private float m_AttackRate = 2.5f;
+        [SerializeField, Range(0.0f, 8.0f), Tooltip("How fast this rotates towards target when attacking")]
+        private float m_RotationSpeed = 4.5f;
+        [SerializeField, Range(0.0f, 1.0f), Tooltip("the limit on health before the enemy attempts to flee")]
+        private float m_FleeBoundary = 0.4f;
 
         [SerializeField]
         private GameObject m_Muzzle = null;
@@ -27,7 +31,7 @@ namespace FSM
 
         #region Properties
 
-        public List<GameObject> Targets { get; } = new List<GameObject>(); // CHECK FOR NULL, IF NULL, Transition TO PATROL
+        public List<GameObject> Targets { get; } = new List<GameObject>();
         public NavMeshAgent Agent { get; private set; } = null;
         public GameObject Target { get; private set; } = null;
         public GameObject Muzzle => m_Muzzle;
@@ -37,6 +41,8 @@ namespace FSM
         public float ViewAngle => m_ViewAngle;
         public float AttackRange => m_AttackRange;
         public float AttackRate => m_AttackRate;
+        public float RotationSpeed => m_RotationSpeed;
+        public float FleeBoundary => m_FleeBoundary;
 
         #endregion
 
@@ -48,10 +54,11 @@ namespace FSM
         public readonly Attack AttackState = new Attack();
         public readonly Chase  ChaseState  = new Chase();
         public readonly Flee   FleeState   = new Flee();
-        public readonly Dead   DeadState   = new Dead();
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             Agent = GetComponent<NavMeshAgent>();
 
             GameObject.FindGameObjectsWithTag("Enemy").ToList().ForEach(t => 
@@ -64,7 +71,6 @@ namespace FSM
             States.Add(AttackState);
             States.Add(ChaseState);
             States.Add(FleeState);
-            States.Add(DeadState);
 
             States.ForEach(s => s.Init(this)); // Initialize each state
         }
@@ -77,18 +83,21 @@ namespace FSM
         private void Update()
         {
             Targets.RemoveAll(t => t == null);
-
-            if (m_CurrentState != null)
-                m_CurrentState.Update(this);
+            
+            m_CurrentState?.Update();
         }
 
-        public void TransitionTo(State state)
+        public bool TransitionTo(State state)
         {
-            if (m_CurrentState != null)
-                m_CurrentState.Exit(this);
+            if (state == m_CurrentState || state == null)
+                return false;
+            
+            m_CurrentState?.Exit();
 
             m_CurrentState = state;
-            m_CurrentState.Enter(this);
+            m_CurrentState.Enter();
+
+            return true;
         }
 
         public void SetTarget(GameObject target)
@@ -99,16 +108,10 @@ namespace FSM
             Target = target;
         }
 
-        public override void TakeDamage()
-        {
-            if ((--m_Health) <= 0)
-            {
-                TransitionTo(DeadState);
-            }
-        }
-
         public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)
         {
+            // Returns a random point on navigation mesh
+
             Vector3 randDirection = (Random.insideUnitSphere * distance) + origin;
             NavMesh.SamplePosition(randDirection, out NavMeshHit navHit, distance, layermask);
 
@@ -131,7 +134,7 @@ namespace FSM
                 visibleTargets.Add(target);
             }
 
-            List<GameObject> filterTargets = new List<GameObject>(); // Filter all visible targets based on range and angle
+            List<GameObject> filterTargets = new List<GameObject>(); // Filter all visible targets based on view range and view angle
             foreach (GameObject target in visibleTargets)
             {
                 if (!TargetVisible(target))
@@ -145,9 +148,6 @@ namespace FSM
         
         public bool TargetVisible(GameObject target)
         {
-            if (target == null)
-                return false;
-
             return WithinViewRange(target) && WithinViewAngle(target);
         }
 
@@ -167,11 +167,10 @@ namespace FSM
 
         public bool WithinAttackRange(GameObject target)
         {
-            if (target == null)
-                return false;
-
             float distanceTo = (target.transform.position - transform.position).magnitude;
             return (distanceTo < AttackRange);
         }
+
+        public bool Flee() => (Health <= (StartHealth * FleeBoundary));
     }
 }

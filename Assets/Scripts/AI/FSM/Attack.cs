@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 namespace FSM
 {
@@ -8,45 +7,76 @@ namespace FSM
 
     public class Attack : State
     {
-        private Coroutine m_AttackCoroutine = null;
+        private FSM_Context m_Context;
+        private Coroutine m_AttackCoroutine;
 
         public override void Init(FSM_Context context)
         {
-
+            m_Context = context;
+            m_AttackCoroutine = null;
         }
 
-        public override void Enter(FSM_Context context)
+        public override void Enter()
         {
-            m_AttackCoroutine = context.StartCoroutine(FireAtTarget(context));
+            m_AttackCoroutine = m_Context.StartCoroutine(FireAtTarget());
         }
 
-        public override void Update(FSM_Context context)
+        public override void Update()
         {
-            if (context.Target == null)
-                context.TransitionTo(context.PatrolState);
+            GameObject target = m_Context.Target;
 
-            if (!context.TargetVisible(context.Target))
-                context.TransitionTo(context.ChaseState);
+            if (target == null)
+            {
+                if (m_Context.TransitionTo(m_Context.PatrolState))
+                    return;
+            }
+
+            if (m_Context.Flee())
+            {
+                if (m_Context.TransitionTo(m_Context.FleeState))
+                    return;
+            }
+
+            if (!m_Context.TargetVisible(target))
+            {
+                if (m_Context.TransitionTo(m_Context.ChaseState))
+                    return;
+            }
+
+            RotateTowardsTarget();
         }
 
-        public override void Exit(FSM_Context context)
+        public override void Exit()
         {
-            context.StopCoroutine(m_AttackCoroutine);
+            m_Context.StopCoroutine(m_AttackCoroutine);
         }
 
-        private IEnumerator FireAtTarget(FSM_Context context)
+        private IEnumerator FireAtTarget()
         {
             while (true)
             {
-                yield return new WaitForSeconds(context.AttackRate);
+                yield return new WaitForSeconds(m_Context.AttackRate);
 
-                GameObject target = context.Target;
-                GameObject muzzle = context.Muzzle;
-                GameObject bullet = context.Bullet;
+                GameObject target = m_Context.Target;
+                GameObject muzzle = m_Context.Muzzle;
+                GameObject bullet = m_Context.Bullet;
 
                 Object.Instantiate(bullet, muzzle.transform.position,
                     Quaternion.LookRotation(target.transform.position - muzzle.transform.position));
             }
+        }
+
+        private void RotateTowardsTarget()
+        {
+            Transform target = m_Context.Target.transform;
+            Transform obj = m_Context.gameObject.transform;
+
+            Vector3 lookDir = (target.position - obj.position);
+
+            lookDir.y = 0;
+
+            Quaternion rotate = Quaternion.LookRotation(lookDir);
+            obj.rotation = Quaternion.Slerp(obj.rotation, rotate, m_Context.RotationSpeed * Time.deltaTime);
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 namespace FSM
 {
@@ -8,59 +7,63 @@ namespace FSM
 
     public class Patrol : State
     {
+        private FSM_Context m_Context;
+        private NavMeshAgent m_Agent;
+
         public override void Init(FSM_Context context)
         {
-
+            m_Context = context;
+            m_Agent = context.Agent;
         }
 
-        public override void Enter(FSM_Context context)
+        public override void Enter()
         {
-            context.Agent.isStopped = false;
-
-            context.Agent.SetDestination(FSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
+            m_Agent.isStopped = false;
+            m_Agent.SetDestination(FSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
         }
 
-        public override void Update(FSM_Context context) // Whilst patrolling, wander and search
+        public override void Update() // Whilst patrolling, wander and search
         {
-            Wander(context);
-            SearchForTarget(context);
+            Wander();
+
+            if (SearchForTarget()) // If target found
+                return;
         }
 
-        public override void Exit(FSM_Context context)
+        public override void Exit()
         {
-            context.Agent.isStopped = true;
+            m_Agent.isStopped = true;
         }
 
-        private void Wander(FSM_Context context)
+        private void Wander()
         {
-            if (context.Agent.remainingDistance > float.Epsilon)
+            if (m_Agent.remainingDistance > float.Epsilon)
                 return;
 
-            context.Agent.SetDestination(FSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
+            m_Agent.SetDestination(FSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
         }
 
-        private void SearchForTarget(FSM_Context context)
+        private bool SearchForTarget()
         {
-            GameObject closestTarget = ClosestTarget(context, context.VisibleTargets());
+            GameObject closestTarget = ClosestTarget();
 
             if (closestTarget == null)
-                return;
+                return false;
 
-            context.SetTarget(closestTarget);      
-            context.TransitionTo(context.ChaseState);
+            m_Context.SetTarget(closestTarget);      
+            m_Context.TransitionTo(m_Context.ChaseState);
+
+            return true;
         }
 
-        private GameObject ClosestTarget(FSM_Context context, List<GameObject> targets)
+        private GameObject ClosestTarget()
         {
-            if (targets.Count == 0)
-                return null;
-
             GameObject result = null;
             float minDistance = float.MaxValue;
 
-            foreach (GameObject target in targets)
+            foreach (GameObject target in m_Context.VisibleTargets())
             {
-                float distance = (target.transform.position - context.transform.position).magnitude;
+                float distance = (target.transform.position - m_Context.transform.position).magnitude;
 
                 if (distance < minDistance)
                 {

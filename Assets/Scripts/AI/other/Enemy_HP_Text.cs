@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Enemy_HP_Text : MonoBehaviour
@@ -17,9 +15,12 @@ public class Enemy_HP_Text : MonoBehaviour
 
     void Update()
     {
-        if (m_Enemy != null)
-            m_Text.text = m_Enemy.Health.ToString();
-        else
+        if (m_Enemy == null)
+        {  
+            m_Text.text = "0";
             Destroy(this);
+        }
+        else
+            m_Text.text = m_Enemy.Health.ToString();
     }
 }

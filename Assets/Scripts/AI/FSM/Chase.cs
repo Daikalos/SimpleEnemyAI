@@ -1,35 +1,46 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 namespace FSM
 {
     public class Chase : State
     {
+        private FSM_Context m_Context;
+        private NavMeshAgent m_Agent;
+
         public override void Init(FSM_Context context)
         {
-
+            m_Context = context;
+            m_Agent = context.Agent;
         }
 
-        public override void Enter(FSM_Context context)
+        public override void Enter()
         {
-            context.Agent.isStopped = false;
+            m_Agent.isStopped = false;
         }
 
-        public override void Update(FSM_Context context)
+        public override void Update()
         {
-            if (context.Target == null)
-                context.TransitionTo(context.PatrolState);
+            GameObject target = m_Context.Target;
 
-            if (context.WithinAttackRange(context.Target))
-                context.TransitionTo(context.AttackState);
+            if (target == null)
+            {
+                if (m_Context.TransitionTo(m_Context.PatrolState)) 
+                    return;
+            }
 
-            context.Agent.SetDestination(context.Target.transform.position);
+            if (m_Context.WithinAttackRange(target))
+            {
+                if (m_Context.TransitionTo(m_Context.AttackState)) 
+                    return;
+            }
+
+            m_Agent.SetDestination(target.transform.position);
         }
 
-        public override void Exit(FSM_Context context)
+        public override void Exit()
         {
-            context.Agent.isStopped = true;
+            m_Agent.isStopped = true;
         }
     }
 }

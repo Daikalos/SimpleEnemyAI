@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
@@ -17,7 +15,7 @@ public class Bullet : MonoBehaviour
 
     private void Awake()
     {
-        Destroy(this, 10.0f);
+        Destroy(gameObject, 10.0f);
     }
 
     private void Start()
@@ -31,11 +29,8 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         //Used to prevent bullet colliding with target when behind a object
-        ObjectCollision = (Physics.Raycast(transform.position, transform.forward, out RaycastHit objectHit, m_Rigidbody.velocity.magnitude * Time.deltaTime));
+        ObjectCollision = (Physics.Raycast(transform.position, transform.forward, out RaycastHit objectHit, m_Rigidbody.velocity.magnitude * Time.deltaTime, 1 << 8));
         
-        if (ObjectCollision && objectHit.collider.CompareTag("Enemy"))
-            ObjectCollision = false;
-
         if (ObjectCollision)
         {
             //Set position to collision point to provide better visual feedback on where bullet collided with object

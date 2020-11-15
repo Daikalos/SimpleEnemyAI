@@ -1,13 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
     [SerializeField, Range(1, 10)]
     protected int m_Health = 5;
 
     public int Health => m_Health;
+    public int StartHealth { get; set; }
 
-    public abstract void TakeDamage();
+    protected virtual void Awake()
+    {
+        StartHealth = m_Health;
+    }
+
+    public virtual void TakeDamage()
+    {
+        if ((--m_Health) <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
 }
