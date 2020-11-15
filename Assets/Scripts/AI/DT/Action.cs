@@ -6,18 +6,21 @@ namespace DT
 {
     public class Action : Node
     {
-        ExecuteAction m_Action;
-
-        public Action(ExecuteAction action, int id) : base(id)
+        public Action(DT_Context context) : base(context)
         {
-            this.m_Action = action;
+
         }
 
         public override bool Evaluate()
         {
-            return m_Action();
+            return Task();
         }
 
-        public delegate bool ExecuteAction();
+        public virtual bool Task()
+        {
+            return true;
+        }
+
+        public delegate bool ExecuteTask();
     }
 }

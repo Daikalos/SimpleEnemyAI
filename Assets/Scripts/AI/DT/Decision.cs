@@ -6,30 +6,39 @@ namespace DT
 {
     public class Decision : Node
     {
-        private Node m_TrueNode = null;
-        private Node m_FalseNode = null;
+        private readonly TestDecision m_Test;
 
-        public Node TrueNode => m_TrueNode;
-        public Node FalseNode => m_FalseNode;
+        public Node TrueNode { get; set; } = null;
+        public Node FalseNode { get; set; } = null;
 
-        public Decision(int id) : base(id)
+        public Decision(DT_Context context, TestDecision test) : base(context)
         {
-
+            m_Test = test;
         }
 
         public override bool Evaluate()
         {
+            bool? result = m_Test?.Invoke();
 
+            if (!result.HasValue)
+                return false;
+
+            if (result.Value)
+            {
+                if (TrueNode == null)
+                    return false;
+
+                return TrueNode.Evaluate();
+            }
+            else
+            {
+                if (FalseNode == null)
+                    return false;
+
+                return FalseNode.Evaluate();
+            }
         }
 
-        public void SetTrueNode(Node trueNode)
-        {
-            m_TrueNode = trueNode;
-        }
-
-        public void SetFalseNode(Node falseNode)
-        {
-            m_FalseNode = falseNode;
-        }
+        public delegate bool TestDecision();
     }
 }

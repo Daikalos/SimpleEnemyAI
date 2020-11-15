@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 4288633269341112637}
   - component: {fileID: 4288633269341112636}
   - component: {fileID: 4288633269341112627}
-  - component: {fileID: 1091464865865191591}
+  - component: {fileID: 8463230184457652741}
   m_Layer: 0
   m_Name: AI_Enemy_BT
   m_TagString: Enemy
@@ -149,7 +149,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1091464865865191591
+--- !u!114 &8463230184457652741
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,10 +158,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 4288633269341112626}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7e1b9d9cfcb62540939209858e20118, type: 3}
+  m_Script: {fileID: 11500000, guid: aca7a901c7b484f498c883cd884c08ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Health: 5
+  m_ViewRange: 10
+  m_ViewAngle: 0.75
+  m_AttackRange: 5
+  m_AttackRate: 2.5
+  m_RotationSpeed: 4.5
+  m_FleeBoundary: 0.4
+  m_Muzzle: {fileID: 1985584655057632156}
+  m_Bullet: {fileID: 2481879445312314898, guid: a3db8a42cd61d434287aa03fdb8eaacd,
+    type: 3}
 --- !u!1 &8412291454513798918
 GameObject:
   m_ObjectHideFlags: 0
