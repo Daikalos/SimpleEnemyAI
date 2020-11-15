@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace DT
 {
@@ -11,10 +12,14 @@ namespace DT
 
         }
 
-        public override bool Task()
+        public override void Task()
         {
+            NavMeshAgent agent = Context.Agent;
 
-            return false;
+            if (agent.isStopped)
+                agent.isStopped = false;
+
+            agent.SetDestination(Context.Target.transform.position);
         }
     }
 }

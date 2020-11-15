@@ -16,7 +16,7 @@ namespace DT
             m_AttackTimer = m_AttackDelay = context.AttackRate;
         }
 
-        public override bool Task()
+        public override void Task()
         {
             NavMeshAgent agent = Context.Agent;
 
@@ -38,8 +38,6 @@ namespace DT
 
                 m_AttackTimer = m_AttackDelay;
             }
-
-            return true;
         }
 
         private void RotateTowardsTarget()

@@ -12,7 +12,7 @@ namespace DT
 
         }
 
-        public override bool Task()
+        public override void Task()
         {
             NavMeshAgent agent = Context.Agent;
 
@@ -20,11 +20,9 @@ namespace DT
                 agent.isStopped = false;
 
             if (agent.remainingDistance > float.Epsilon)
-                return true;
+                return;
 
             agent.SetDestination(RandomPoint(Vector3.zero, 25.0f, -1));
-
-            return true;
         }
 
         private Vector3 RandomPoint(Vector3 origin, float distance, int layermask)

@@ -6,13 +6,11 @@ namespace DT
 {
     public abstract class Node
     {
-        private DT_Context m_Context;
-
-        protected DT_Context Context => m_Context;
+        protected DT_Context Context { get; }
 
         public Node(DT_Context context)
         {
-            m_Context = context;
+            Context = context;
         }
 
         public abstract bool Evaluate();

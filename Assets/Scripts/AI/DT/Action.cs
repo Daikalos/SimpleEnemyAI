@@ -13,12 +13,14 @@ namespace DT
 
         public override bool Evaluate()
         {
-            return Task();
+            Task();
+
+            return true;
         }
 
-        public virtual bool Task()
+        public virtual void Task()
         {
-            return true;
+
         }
 
         public delegate bool ExecuteTask();

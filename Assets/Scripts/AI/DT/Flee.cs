@@ -11,9 +11,9 @@ namespace DT
 
         }
 
-        public override bool Task()
+        public override void Task()
         {
-            return false;
+
         }
     }
 }

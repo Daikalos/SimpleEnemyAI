@@ -64,17 +64,28 @@ namespace DT
 
         private void Start()
         {
-            m_Root = new Decision(this, IsTargetVisible);
+            m_Root = new Decision(this, FindTarget);
 
+            Decision shouldFlee = new Decision(this, Flee);
+            Decision isVisible = new Decision(this, IsTargetVisible);
             Decision inRange = new Decision(this, WithinAttackRange);
 
             Patrol patrol = new Patrol(this);
             Attack attack = new Attack(this);
+            Chase chase = new Chase(this);
+            Flee flee = new Flee(this);
 
-            m_Root.TrueNode = inRange;
+            m_Root.TrueNode = shouldFlee;
             m_Root.FalseNode = patrol;
 
+            shouldFlee.TrueNode = flee;
+            shouldFlee.FalseNode = isVisible;
+
+            isVisible.TrueNode = inRange;
+            isVisible.FalseNode = chase;
+
             inRange.TrueNode = attack;
+            inRange.FalseNode = chase;
         }
 
 
@@ -85,7 +96,20 @@ namespace DT
             m_Root.Evaluate();
         }
 
-        private bool IsTargetVisible()
+        public bool IsTargetVisible()
+        {
+            return WithinViewRange(Target) && WithinViewAngle(Target);
+        }
+
+        public bool WithinAttackRange()
+        {
+            float distanceTo = (Target.transform.position - transform.position).magnitude;
+            return (distanceTo < AttackRange);
+        }
+
+        public bool Flee() => (Health <= (StartHealth * FleeBoundary));
+
+        private bool FindTarget()
         {
             Vector3 position = transform.position;
 
@@ -104,7 +128,7 @@ namespace DT
             List<GameObject> filterTargets = new List<GameObject>(); // Filter all visible targets based on view range and view angle
             foreach (GameObject target in visibleTargets)
             {
-                if (!TargetVisible(target))
+                if (!IsTargetVisible(target))
                     continue;
 
                 filterTargets.Add(target);
@@ -113,7 +137,7 @@ namespace DT
             if (visibleTargets.Count <= 0)
                 return false;
 
-            Target = ClosestTarget(visibleTargets);
+            Target = ClosestTarget(visibleTargets); // Target found
 
             return true;
         }
@@ -137,7 +161,7 @@ namespace DT
             return result;
         }
 
-        public bool TargetVisible(GameObject target)
+        public bool IsTargetVisible(GameObject target)
         {
             return WithinViewRange(target) && WithinViewAngle(target);
         }
@@ -155,13 +179,5 @@ namespace DT
 
             return (withinAngle > ViewAngle);
         }
-
-        public bool WithinAttackRange()
-        {
-            float distanceTo = (Target.transform.position - transform.position).magnitude;
-            return (distanceTo < AttackRange);
-        }
-
-        public bool Flee() => (Health <= (StartHealth * FleeBoundary));
     }
 }

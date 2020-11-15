@@ -93,7 +93,6 @@ namespace FSM
                 return false;
             
             m_CurrentState?.Exit();
-
             m_CurrentState = state;
             m_CurrentState.Enter();
 
