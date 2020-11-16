@@ -2,16 +2,16 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace FSM
+namespace FuSM
 {
     // Patrol as idle state until another enemy is found
 
     public class Patrol : State
     {
-        private FSM_Context m_Context;
+        private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
 
-        public override void Init(FSM_Context context)
+        public override void Init(FuSM_Context context)
         {
             m_Context = context;
             m_Agent = context.Agent;
@@ -20,7 +20,7 @@ namespace FSM
         public override void Enter()
         {
             m_Agent.isStopped = false;
-            m_Agent.SetDestination(FSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
+            m_Agent.SetDestination(FuSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
         }
 
         public override void Update() // Whilst patrolling, wander and search
@@ -42,7 +42,7 @@ namespace FSM
             if (m_Agent.remainingDistance > float.Epsilon)
                 return;
 
-            m_Agent.SetDestination(FSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
+            m_Agent.SetDestination(FuSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
         }
 
         private void SearchForTarget()

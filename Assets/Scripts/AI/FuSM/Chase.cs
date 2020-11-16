@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace FSM
+namespace FuSM
 {
     public class Chase : State
     {
-        private FSM_Context m_Context;
+        private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
 
-        public override void Init(FSM_Context context)
+        public override void Init(FuSM_Context context)
         {
             m_Context = context;
             m_Agent = context.Agent;

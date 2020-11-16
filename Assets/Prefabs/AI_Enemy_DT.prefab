@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 4288633269341112627}
   - component: {fileID: 8463230184457652741}
   m_Layer: 0
-  m_Name: AI_Enemy_BT
+  m_Name: AI_Enemy_DT
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Health: 5
   m_ViewRange: 10
-  m_ViewAngle: 0.75
+  m_ViewAngle: 0.6
   m_AttackRange: 5
   m_AttackRate: 2.5
   m_RotationSpeed: 4.5

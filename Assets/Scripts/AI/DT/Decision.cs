@@ -11,7 +11,7 @@ namespace DT
         public Node TrueNode { get; set; } = null;
         public Node FalseNode { get; set; } = null;
 
-        public Decision(DT_Context context, TestDecision test) : base(context)
+        public Decision(TestDecision test)
         {
             m_Test = test;
         }

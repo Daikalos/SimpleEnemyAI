@@ -2,18 +2,18 @@
 using UnityEngine.AI;
 using System.Linq;
 
-namespace FSM
+namespace FuSM
 {
     // Flee when low health
 
     public class Flee : State
     {
-        private FSM_Context m_Context;
+        private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
 
         private Transform[] m_Waypoints;
 
-        public override void Init(FSM_Context context)
+        public override void Init(FuSM_Context context)
         {
             m_Context = context;
             m_Agent = context.Agent;

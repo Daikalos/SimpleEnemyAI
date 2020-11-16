@@ -243,9 +243,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Health: 5
   m_ViewRange: 10
-  m_ViewAngle: 0.75
+  m_ViewAngle: 0.6
   m_AttackRange: 5
   m_AttackRate: 2.5
+  m_RotationSpeed: 4.5
+  m_FleeBoundary: 0.4
   m_Muzzle: {fileID: 1375697778}
   m_Bullet: {fileID: 2481879445312314898, guid: a3db8a42cd61d434287aa03fdb8eaacd,
     type: 3}

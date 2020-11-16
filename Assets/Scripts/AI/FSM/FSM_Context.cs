@@ -12,7 +12,7 @@ namespace FSM
         [SerializeField, Range(0.0f, 50.0f)]
         private float m_ViewRange = 10.0f;
         [SerializeField, Range(0.0f, 1.0f)]
-        private float m_ViewAngle = 0.75f;
+        private float m_ViewAngle = 0.6f;
         [SerializeField, Range(0.0f, 25.0f)]
         private float m_AttackRange = 5.0f;
         [SerializeField, Range(0.0f, 5.0f)]
@@ -60,7 +60,6 @@ namespace FSM
             base.Awake();
 
             Agent = GetComponent<NavMeshAgent>();
-
             GameObject.FindGameObjectsWithTag("Enemy").ToList().ForEach(t => 
             {
                 if (!t.Equals(this))
@@ -116,36 +115,8 @@ namespace FSM
 
             return navHit.position;
         }
-
-        public List<GameObject> VisibleTargets()
-        {
-            Vector3 position = transform.position;
-
-            List<GameObject> visibleTargets = new List<GameObject>(); // Keep a list to store all enemies that is visible
-            foreach (GameObject target in Targets) // Get all enemies within sight (not behind walls)
-            {
-                Vector3 direction = (target.transform.position - position);
-                Physics.Raycast(position, direction, out RaycastHit hit);
-
-                if (hit.collider == null || !hit.collider.gameObject.CompareTag("Enemy"))
-                    continue;
-
-                visibleTargets.Add(target);
-            }
-
-            List<GameObject> filterTargets = new List<GameObject>(); // Filter all visible targets based on view range and view angle
-            foreach (GameObject target in visibleTargets)
-            {
-                if (!TargetVisible(target))
-                    continue;
-
-                filterTargets.Add(target);
-            }
-            
-            return filterTargets;
-        }
         
-        public bool TargetVisible(GameObject target)
+        public bool IsTargetVisible(GameObject target)
         {
             return WithinViewRange(target) && WithinViewAngle(target);
         }

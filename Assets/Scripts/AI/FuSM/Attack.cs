@@ -2,18 +2,18 @@
 using UnityEngine.AI;
 using System.Collections;
 
-namespace FSM
+namespace FuSM
 {
     // Attack enemy until out of range or no longer visible
 
     public class Attack : State
     {
-        private FSM_Context m_Context;
+        private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
 
         private Coroutine m_AttackCoroutine;
 
-        public override void Init(FSM_Context context)
+        public override void Init(FuSM_Context context)
         {
             m_Context = context;
             m_Agent = context.Agent;

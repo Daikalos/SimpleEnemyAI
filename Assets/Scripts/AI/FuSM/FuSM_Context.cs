@@ -1,12 +1,11 @@
-﻿using System;
+﻿using UnityEngine;
+using UnityEngine.AI;
 using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
 
-namespace DT
+namespace FuSM
 {
-    public class DT_Context : Enemy
+    public class FuSM_Context : Enemy
     {
         #region Variables
 
@@ -37,7 +36,7 @@ namespace DT
         public GameObject Target { get; private set; } = null;
         public GameObject Muzzle => m_Muzzle;
         public GameObject Bullet => m_Bullet;
-
+ 
         public float ViewRange => m_ViewRange;
         public float ViewAngle => m_ViewAngle;
         public float AttackRange => m_AttackRange;
@@ -47,66 +46,76 @@ namespace DT
 
         #endregion
 
-        private Decision m_Root;
+        private State m_CurrentState = null;
+
+        private readonly List<State> States = new List<State>();
+
+        public readonly Patrol PatrolState = new Patrol();
+        public readonly Attack AttackState = new Attack();
+        public readonly Chase  ChaseState  = new Chase();
+        public readonly Flee   FleeState   = new Flee();
 
         protected override void Awake()
         {
             base.Awake();
 
             Agent = GetComponent<NavMeshAgent>();
-            GameObject.FindGameObjectsWithTag("Enemy").ToList().ForEach(t =>
+            GameObject.FindGameObjectsWithTag("Enemy").ToList().ForEach(t => 
             {
                 if (!t.Equals(this))
                     Targets.Add(t);
-            });    
+            });
+
+            States.Add(PatrolState);
+            States.Add(AttackState);
+            States.Add(ChaseState);
+            States.Add(FleeState);
+
+            States.ForEach(s => s.Init(this)); // Initialize each state
         }
 
         private void Start()
         {
-            // Construct Decision Tree
-
-            m_Root = new Decision(IsTargetFound);
-
-            Decision shouldFlee = new Decision(Flee);
-            Decision isVisible = new Decision(IsTargetVisible);
-            Decision inRange = new Decision(WithinAttackRange);
-
-            Patrol patrol = new Patrol(this);
-            Attack attack = new Attack(this);
-            Chase chase = new Chase(this);
-            Flee flee = new Flee(this);
-
-            m_Root.TrueNode = shouldFlee;
-            m_Root.FalseNode = patrol;
-
-            shouldFlee.TrueNode = flee;
-            shouldFlee.FalseNode = isVisible;
-
-            isVisible.TrueNode = inRange;
-            isVisible.FalseNode = chase;
-
-            inRange.TrueNode = attack;
-            inRange.FalseNode = chase;
+            TransitionTo(PatrolState);
         }
-
 
         private void Update()
         {
             Targets.RemoveAll(t => t == null);
-
-            if (!m_Root.Evaluate())
-                Debug.LogException(new NullReferenceException("Decision Tree is not correctly constructed"), this);
+            
+            m_CurrentState?.Update();
         }
 
-        private bool IsTargetFound()     => (Target != null);
-        private bool Flee()              => (Health <= (StartHealth * FleeBoundary));
-        private bool IsTargetVisible()   => (WithinViewRange(Target) && WithinViewAngle(Target));
-        private bool WithinAttackRange()
+        public bool TransitionTo(State state)
         {
-            float distanceTo = (Target.transform.position - transform.position).magnitude;
-            return (distanceTo < AttackRange);
+            if (state == m_CurrentState || state == null)
+                return false;
+            
+            m_CurrentState?.Exit();
+            m_CurrentState = state;
+            m_CurrentState.Enter();
+
+            return true;
         }
 
+        public void SetTarget(GameObject target)
+        {
+            if (target == gameObject)
+                return;
+
+            Target = target;
+        }
+
+        public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)
+        {
+            // Returns a random point on navigation mesh
+
+            Vector3 randDirection = (Random.insideUnitSphere * distance) + origin;
+            NavMesh.SamplePosition(randDirection, out NavMeshHit navHit, distance, layermask);
+
+            return navHit.position;
+        }
+        
         public bool IsTargetVisible(GameObject target)
         {
             return WithinViewRange(target) && WithinViewAngle(target);
@@ -126,12 +135,19 @@ namespace DT
             return (withinAngle > ViewAngle);
         }
 
-        public void SetTarget(GameObject target)
+        public bool WithinAttackRange(GameObject target)
         {
-            if (target == gameObject)
-                return;
-
-            Target = target;
+            float distanceTo = (target.transform.position - transform.position).magnitude;
+            return (distanceTo < AttackRange);
         }
+
+        public bool FuzzyFlee()
+        {
+
+
+            return false;
+        }
+
+        public bool Flee() => (Health <= (StartHealth * FleeBoundary));
     }
 }

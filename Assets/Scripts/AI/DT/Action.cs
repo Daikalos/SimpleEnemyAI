@@ -4,25 +4,22 @@ using UnityEngine;
 
 namespace DT
 {
-    public class Action : Node
+    public abstract class Action : Node
     {
-        public Action(DT_Context context) : base(context)
-        {
+        protected DT_Context Context { get; }
 
+        public Action(DT_Context context)
+        {
+            Context = context;
         }
 
         public override bool Evaluate()
         {
-            Task();
+            ExecuteAction();
 
             return true;
         }
 
-        public virtual void Task()
-        {
-
-        }
-
-        public delegate bool ExecuteTask();
+        public abstract void ExecuteAction();
     }
 }
