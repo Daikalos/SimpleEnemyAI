@@ -6,12 +6,27 @@ namespace FuSM
 {
     // Attack enemy until out of range or no longer visible
 
-    public class Attack : State
+    public class Attack : FuzzyState
     {
         private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
 
         private Coroutine m_AttackCoroutine;
+
+        public override float FuzzyValue()
+        {
+            if (m_Context.Target != null)
+            {
+                GameObject target = m_Context.Target;
+                GameObject obj = m_Context.gameObject;
+
+                float distToTarget = (target.transform.position - obj.transform.position).magnitude;
+
+                return (distToTarget < m_Context.AttackRange) ? 1.0f : 0.0f;
+            }
+
+            return 0.0f;
+        }
 
         public override void Init(FuSM_Context context)
         {
@@ -31,26 +46,6 @@ namespace FuSM
 
         public override void Update()
         {
-            GameObject target = m_Context.Target;
-
-            if (target == null)
-            {
-                if (m_Context.TransitionTo(m_Context.PatrolState))
-                    return;
-            }
-
-            if (m_Context.Flee())
-            {
-                if (m_Context.TransitionTo(m_Context.FleeState))
-                    return;
-            }
-
-            if (!m_Context.IsTargetVisible(target))
-            {
-                if (m_Context.TransitionTo(m_Context.ChaseState))
-                    return;
-            }
-
             RotateTowardsTarget();
         }
 

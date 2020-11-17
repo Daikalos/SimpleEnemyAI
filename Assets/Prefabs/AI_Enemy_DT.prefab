@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca7a901c7b484f498c883cd884c08ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Health: 5
+  m_Health: 15
   m_ViewRange: 10
   m_ViewAngle: 0.6
   m_AttackRange: 5

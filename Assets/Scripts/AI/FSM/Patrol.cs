@@ -31,7 +31,7 @@ namespace FSM
 
         public override void Exit()
         {
-            m_Agent.isStopped = true;
+
         }
 
         private void Wander()

@@ -6,12 +6,24 @@ namespace FuSM
 {
     // Flee when low health
 
-    public class Flee : State
+    public class Flee : FuzzyState
     {
         private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
 
         private Transform[] m_Waypoints;
+
+        public override float FuzzyValue()
+        {
+            float health = m_Context.Health;
+            float startHealth = m_Context.StartHealth;
+
+            float minHealth = m_Context.StartHealth * m_Context.FleeBoundary;
+
+            float fuzzyValue = ((health - minHealth) / (startHealth - minHealth));
+
+            return (1.0f - fuzzyValue);
+        }
 
         public override void Init(FuSM_Context context)
         {
@@ -29,19 +41,13 @@ namespace FuSM
 
         public override void Update()
         {
-            if (m_Agent.pathPending)
-                return;
 
-            if (m_Agent.remainingDistance <= float.Epsilon)
-            {
-                if (m_Context.TransitionTo(m_Context.PatrolState))
-                    return;
-            }
         }
 
         public override void Exit()
         {
             m_Context.StartHealth = m_Context.Health;
+            m_Context.SetTarget(null);
         }
 
         private Transform RandomWaypoint()

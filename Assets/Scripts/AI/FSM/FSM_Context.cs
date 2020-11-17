@@ -7,45 +7,6 @@ namespace FSM
 {
     public class FSM_Context : Enemy
     {
-        #region Variables
-
-        [SerializeField, Range(0.0f, 50.0f)]
-        private float m_ViewRange = 10.0f;
-        [SerializeField, Range(0.0f, 1.0f)]
-        private float m_ViewAngle = 0.6f;
-        [SerializeField, Range(0.0f, 25.0f)]
-        private float m_AttackRange = 5.0f;
-        [SerializeField, Range(0.0f, 5.0f)]
-        private float m_AttackRate = 2.5f;
-        [SerializeField, Range(0.0f, 8.0f), Tooltip("How fast this rotates towards target when attacking")]
-        private float m_RotationSpeed = 4.5f;
-        [SerializeField, Range(0.0f, 1.0f), Tooltip("the limit on health before the enemy attempts to flee")]
-        private float m_FleeBoundary = 0.4f;
-
-        [SerializeField]
-        private GameObject m_Muzzle = null;
-        [SerializeField]
-        private GameObject m_Bullet = null;
-
-        #endregion
-
-        #region Properties
-
-        public List<GameObject> Targets { get; } = new List<GameObject>();
-        public NavMeshAgent Agent { get; private set; } = null;
-        public GameObject Target { get; private set; } = null;
-        public GameObject Muzzle => m_Muzzle;
-        public GameObject Bullet => m_Bullet;
- 
-        public float ViewRange => m_ViewRange;
-        public float ViewAngle => m_ViewAngle;
-        public float AttackRange => m_AttackRange;
-        public float AttackRate => m_AttackRate;
-        public float RotationSpeed => m_RotationSpeed;
-        public float FleeBoundary => m_FleeBoundary;
-
-        #endregion
-
         private State m_CurrentState = null;
 
         private readonly List<State> States = new List<State>();
@@ -58,13 +19,6 @@ namespace FSM
         protected override void Awake()
         {
             base.Awake();
-
-            Agent = GetComponent<NavMeshAgent>();
-            GameObject.FindGameObjectsWithTag("Enemy").ToList().ForEach(t => 
-            {
-                if (!t.Equals(this))
-                    Targets.Add(t);
-            });
 
             States.Add(PatrolState);
             States.Add(AttackState);
@@ -81,8 +35,6 @@ namespace FSM
 
         private void Update()
         {
-            Targets.RemoveAll(t => t == null);
-            
             m_CurrentState?.Update();
         }
 
@@ -98,14 +50,6 @@ namespace FSM
             return true;
         }
 
-        public void SetTarget(GameObject target)
-        {
-            if (target == gameObject)
-                return;
-
-            Target = target;
-        }
-
         public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)
         {
             // Returns a random point on navigation mesh
@@ -115,11 +59,9 @@ namespace FSM
 
             return navHit.position;
         }
-        
-        public bool IsTargetVisible(GameObject target)
-        {
-            return WithinViewRange(target) && WithinViewAngle(target);
-        }
+
+        public bool Flee() => (Health <= (StartHealth * FleeBoundary));
+        public bool IsTargetVisible(GameObject target) => (WithinViewRange(target) && WithinViewAngle(target));
 
         public bool WithinViewRange(GameObject target)
         {
@@ -140,7 +82,5 @@ namespace FSM
             float distanceTo = (target.transform.position - transform.position).magnitude;
             return (distanceTo < AttackRange);
         }
-
-        public bool Flee() => (Health <= (StartHealth * FleeBoundary));
     }
 }

@@ -6,10 +6,15 @@ namespace FuSM
 {
     // Patrol as idle state until another enemy is found
 
-    public class Patrol : State
+    public class Patrol : FuzzyState
     {
         private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
+
+        public override float FuzzyValue()
+        {
+            return (m_Context.Target == null) ? 1.0f : 0.0f;
+        }
 
         public override void Init(FuSM_Context context)
         {
@@ -31,7 +36,7 @@ namespace FuSM
 
         public override void Exit()
         {
-            m_Agent.isStopped = true;
+
         }
 
         private void Wander()
@@ -52,8 +57,7 @@ namespace FuSM
             if (closestTarget == null)
                 return;
 
-            m_Context.SetTarget(closestTarget);      
-            m_Context.TransitionTo(m_Context.ChaseState);
+            m_Context.SetTarget(closestTarget);
         }
 
         private List<GameObject> VisibleTargets()

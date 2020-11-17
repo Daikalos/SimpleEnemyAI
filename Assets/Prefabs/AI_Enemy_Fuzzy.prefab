@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 2798254540567544365}
   - component: {fileID: 2798254540567544354}
   - component: {fileID: 2798254540567544355}
-  - component: {fileID: 8212560974686618708}
+  - component: {fileID: 3099062208900967417}
   m_Layer: 0
   m_Name: AI_Enemy_Fuzzy
   m_TagString: Enemy
@@ -149,7 +149,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &8212560974686618708
+--- !u!114 &3099062208900967417
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,10 +158,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 2798254540567544352}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7e1b9d9cfcb62540939209858e20118, type: 3}
+  m_Script: {fileID: 11500000, guid: 3cfcfac38ac1d0b4f85163b32d13b2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Health: 5
+  m_Health: 15
+  m_ViewRange: 10
+  m_ViewAngle: 0.6
+  m_AttackRange: 5
+  m_AttackRate: 2.5
+  m_RotationSpeed: 4.5
+  m_FleeBoundary: 0.4
+  m_Muzzle: {fileID: 606672376823666483}
+  m_Bullet: {fileID: 2481879445312314898, guid: a3db8a42cd61d434287aa03fdb8eaacd,
+    type: 3}
 --- !u!1 &3373580846684651611
 GameObject:
   m_ObjectHideFlags: 0

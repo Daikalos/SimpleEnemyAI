@@ -3,10 +3,28 @@ using UnityEngine.AI;
 
 namespace FuSM
 {
-    public class Chase : State
+    public class Chase : FuzzyState
     {
         private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
+
+        public override float FuzzyValue()
+        {
+            if (m_Context.Target != null)
+            {
+                GameObject target = m_Context.Target;
+                GameObject obj = m_Context.gameObject;
+
+                float distToTarget = (target.transform.position - obj.transform.position).magnitude;
+
+                if ((distToTarget - m_Context.AttackRange) < 0.0f)
+                    return 0.0f;
+
+                return ((distToTarget - m_Context.AttackRange) / m_Context.ViewRange);
+            }
+
+            return 0.0f;
+        }
 
         public override void Init(FuSM_Context context)
         {
@@ -21,21 +39,7 @@ namespace FuSM
 
         public override void Update()
         {
-            GameObject target = m_Context.Target;
-
-            if (target == null)
-            {
-                if (m_Context.TransitionTo(m_Context.PatrolState)) 
-                    return;
-            }
-
-            if (m_Context.WithinAttackRange(target))
-            {
-                if (m_Context.TransitionTo(m_Context.AttackState)) 
-                    return;
-            }
-
-            m_Agent.SetDestination(target.transform.position);
+            m_Agent.SetDestination(m_Context.Target.transform.position);
         }
 
         public override void Exit()

@@ -25,6 +25,8 @@ namespace FSM
         {
             m_Agent.isStopped = false;
             m_Agent.SetDestination(RandomWaypoint().position);
+
+            m_Context.SetTarget(null);
         }
 
         public override void Update()

@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 200.13, y: 0.000013733}
-  m_SizeDelta: {x: 42.630104, y: 51.82473}
+  m_AnchoredPosition: {x: 194.58, y: 0.000013733}
+  m_SizeDelta: {x: 53.727814, y: 51.82473}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &347888492
 CanvasRenderer:
@@ -127,8 +127,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 200.13, y: -25.912}
-  m_SizeDelta: {x: 42.63066, y: 51.82437}
+  m_AnchoredPosition: {x: 194.58, y: -25.912}
+  m_SizeDelta: {x: 53.725693, y: 51.82437}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1173005708
 CanvasRenderer:
@@ -285,8 +285,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 200.13, y: 25.912}
-  m_SizeDelta: {x: 42.63037, y: 51.824165}
+  m_AnchoredPosition: {x: 194.58, y: 25.912}
+  m_SizeDelta: {x: 53.72796, y: 51.824165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1640178995
 CanvasRenderer:
@@ -476,8 +476,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 195, y: -25.912003}
-  m_SizeDelta: {x: 389.99768, y: 51.824738}
+  m_AnchoredPosition: {x: 189.83, y: -25.912003}
+  m_SizeDelta: {x: 379.65222, y: 51.824738}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7972150004276550169
 CanvasRenderer:
@@ -519,7 +519,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ' DT       (green)        HP'
+  m_Text: ' DT       (green)         HP'
 --- !u!1 &7972150004360373854
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,8 +554,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 195, y: 25.912003}
-  m_SizeDelta: {x: 389.99628, y: 51.82473}
+  m_AnchoredPosition: {x: 189.83, y: 25.912003}
+  m_SizeDelta: {x: 379.65546, y: 51.82473}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7972150004360373851
 CanvasRenderer:
@@ -597,7 +597,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: " FuSM  (blue)   \t    HP"
+  m_Text: " FuSM   (blue)  \t     HP"
 --- !u!1 &7972150004530285517
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,8 +632,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 195, y: 0}
-  m_SizeDelta: {x: 389.99707, y: 51.82473}
+  m_AnchoredPosition: {x: 189.83, y: 0}
+  m_SizeDelta: {x: 379.65466, y: 51.82473}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7972150004530285514
 CanvasRenderer:
@@ -675,7 +675,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: " FSM   \t(yellow)      \tHP"
+  m_Text: " FSM   \t(yellow)\t     HP"
 --- !u!1 &7972150004534036975
 GameObject:
   m_ObjectHideFlags: 0
