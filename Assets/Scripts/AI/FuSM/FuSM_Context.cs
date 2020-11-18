@@ -5,6 +5,13 @@ using System.Collections.Generic;
 
 namespace FuSM
 {
+    public enum Priority
+    {
+        Low,
+        Medium, 
+        High
+    }
+
     public class FuSM_Context : Enemy
     {
         private readonly List<FuzzyState> ActiveStates = new List<FuzzyState>();
@@ -29,34 +36,89 @@ namespace FuSM
 
         private void Update()
         {
-            float avg = AverageFuzzyValue();
-            foreach (FuzzyState state in States)
-            {
-                float val = state.FuzzyValue();
-                if (val > avg)
-                {
-                    if (!ActiveStates.Contains(state))
-                    {
-                        ActiveStates.Add(state);
-                        state.Enter();
-                    }
-                }
-                else
-                {
-                    if (ActiveStates.Contains(state))
-                    {
-                        ActiveStates.Remove(state);
-                        state.Exit();
-                    }
-                }
-            }
+            ShouldChaseOrFlee();
+
+            ShouldPatrol();
+            ShouldAttack();
 
             ActiveStates.ForEach(s => s.Update());
         }
 
-        private float AverageFuzzyValue()
+        private void ShouldPatrol()
         {
-            return States.Sum(s => s.FuzzyValue()) / States.Count;
+            UpdateStateStatus(PatrolState, (PatrolState.FuzzyValue() == 1.0f));
+        }
+
+        private void ShouldAttack()
+        {
+            UpdateStateStatus(AttackState, (AttackState.FuzzyValue() == 1.0f));
+        }
+
+        private void ShouldChaseOrFlee()
+        {
+            float chaseVal = ChaseState.FuzzyValue();
+            float fleeVal = FleeState.FuzzyValue();
+
+            bool shouldFlee = (GetPriority(fleeVal) == Priority.High);
+            bool shouldChase = (chaseVal == 1.0f && !shouldFlee);
+
+            UpdateStateStatus(ChaseState, shouldChase);
+            UpdateStateStatus(FleeState, shouldFlee);
+        }
+
+        public Priority GetPriority(float fuzzyValue)
+        {
+            float low = TriangularFuzzyNumber(fuzzyValue, 0.0f, 0.0f, 0.3f);
+            float medium = TriangularFuzzyNumber(fuzzyValue, 0.2f, 0.5f, 0.2f);
+            float high = TriangularFuzzyNumber(fuzzyValue, 0.3f, 1.0f, 0.0f);
+
+            float max = Mathf.Max(low, Mathf.Max(medium, high)); // Select the one of highest value (highest priority)
+
+            if (low == max)
+                return Priority.Low;
+            if (medium == max)
+                return Priority.Medium;
+            if (high == max)
+                return Priority.High;
+
+            return Priority.Low;
+        }
+
+        private void UpdateStateStatus(FuzzyState state, bool status)
+        {
+            if (status)
+            {
+                if (!ActiveStates.Contains(state))
+                {
+                    ActiveStates.Add(state);
+                    state.Enter();
+                }
+            }
+            else
+            {
+                if (ActiveStates.Contains(state))
+                {
+                    ActiveStates.Remove(state);
+                    state.Exit();
+                }
+            }
+        }
+
+        private float TriangularFuzzyNumber(float x, float lhs, float med, float rhs)
+        {
+            // Formula from https://ijfs.usb.ac.ir/article_359_0038d4fb0f550de224041cbbbd77caf6.pdf
+            // Where x = input, lhs = left-length, med = median, rhs = right-length
+
+            if (x > (med - lhs) && x < med)
+                return 1.0f - ((med - x) / lhs);
+
+            if (x == med)
+                return 1.0f;
+
+            if (x > med && x < (med + rhs))
+                return 1.0f - ((x - med) / rhs);         
+
+            return 0.0f;
         }
 
         public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)

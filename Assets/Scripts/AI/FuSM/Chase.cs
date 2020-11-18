@@ -17,10 +17,7 @@ namespace FuSM
 
                 float distToTarget = (target.transform.position - obj.transform.position).magnitude;
 
-                if ((distToTarget - m_Context.AttackRange) < 0.0f)
-                    return 0.0f;
-
-                return ((distToTarget - m_Context.AttackRange) / m_Context.ViewRange);
+                return (distToTarget > m_Context.AttackRange) ? 1.0f : 0.0f;
             }
 
             return 0.0f;
