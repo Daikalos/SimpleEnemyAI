@@ -41,12 +41,17 @@ namespace FuSM
 
         public override void Update()
         {
+            if (m_Agent.pathPending)
+                return;
 
+            if (m_Agent.remainingDistance < float.Epsilon)
+            {
+                m_Context.StartHealth = m_Context.Health;
+            }
         }
 
         public override void Exit()
         {
-            m_Context.StartHealth = m_Context.Health;
             m_Context.SetTarget(null);
         }
 

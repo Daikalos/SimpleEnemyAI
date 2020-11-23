@@ -12,14 +12,5 @@ namespace DT
         {
             Context = context;
         }
-
-        public override bool Evaluate()
-        {
-            ExecuteAction();
-
-            return true;
-        }
-
-        public abstract void ExecuteAction();
     }
 }

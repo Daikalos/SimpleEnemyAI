@@ -18,7 +18,7 @@ namespace DT
             m_AttackTimer = m_AttackDelay = context.AttackRate;
         }
 
-        public override void ExecuteAction()
+        public override bool Evaluate()
         {
             if (!m_Agent.isStopped)
             {
@@ -28,6 +28,8 @@ namespace DT
 
             RotateTowardsTarget();
             FireAtTarget();
+
+            return true;
         }
 
         private void RotateTowardsTarget()

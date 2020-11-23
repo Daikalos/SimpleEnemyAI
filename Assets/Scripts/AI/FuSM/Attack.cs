@@ -4,8 +4,6 @@ using System.Collections;
 
 namespace FuSM
 {
-    // Attack enemy until out of range or no longer visible
-
     public class Attack : FuzzyState
     {
         private FuSM_Context m_Context;

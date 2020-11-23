@@ -14,7 +14,7 @@ namespace DT
             m_Agent = context.Agent;
         }
 
-        public override void ExecuteAction()
+        public override bool Evaluate()
         {
             if (m_Agent.isStopped)
             {
@@ -23,6 +23,8 @@ namespace DT
             }
 
             m_Agent.SetDestination(Context.Target.transform.position);
+
+            return true;
         }
     }
 }

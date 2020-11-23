@@ -14,10 +14,12 @@ namespace DT
             m_Agent = context.Agent;
         }
 
-        public override void ExecuteAction()
+        public override bool Evaluate()
         {
             Wander();
             SearchForTarget();
+
+            return true;
         }
 
         private void Wander()

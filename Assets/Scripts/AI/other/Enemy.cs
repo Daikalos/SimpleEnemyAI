@@ -80,7 +80,7 @@ public class Enemy : MonoBehaviour
 
     public void SetTarget(GameObject target)
     {
-        if (target == gameObject)
+        if (target == gameObject) // Cannot set self as target
             return;
 
         Target = target;

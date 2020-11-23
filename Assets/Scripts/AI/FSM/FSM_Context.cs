@@ -62,13 +62,11 @@ namespace FSM
 
         public bool Flee() => (Health <= (StartHealth * FleeBoundary));
         public bool IsTargetVisible(GameObject target) => (WithinViewRange(target) && WithinViewAngle(target));
-
         public bool WithinViewRange(GameObject target)
         {
             float distanceTo = (target.transform.position - transform.position).magnitude;
             return (distanceTo < ViewRange);
         }
-
         public bool WithinViewAngle(GameObject target)
         {
             Vector3 dir = (target.transform.position - transform.position).normalized;
@@ -76,7 +74,6 @@ namespace FSM
 
             return (withinAngle > ViewAngle);
         }
-
         public bool WithinAttackRange(GameObject target)
         {
             float distanceTo = (target.transform.position - transform.position).magnitude;

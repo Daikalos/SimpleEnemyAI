@@ -18,7 +18,7 @@ namespace DT
             m_Waypoints = GameObject.FindGameObjectsWithTag("Waypoint").Select(w => w.transform).ToArray();
         }
 
-        public override void ExecuteAction()
+        public override bool Evaluate()
         {
             if (m_Agent.isStopped)
             {
@@ -33,10 +33,9 @@ namespace DT
             }
 
             if (m_Agent.pathPending)
-                return;
+                return true;
 
-            if (m_Agent.remainingDistance > float.Epsilon) 
-                return;
+            if (m_Agent.remainingDistance > float.Epsilon) return true;
             else
             {
                 m_Waypoint = null;
@@ -44,6 +43,8 @@ namespace DT
                 Context.StartHealth = Context.Health;
                 Context.SetTarget(null);
             }
+
+            return true;
         }
 
         private Transform RandomWaypoint()

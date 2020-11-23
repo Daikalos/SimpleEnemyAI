@@ -44,6 +44,12 @@ namespace FuSM
             ActiveStates.ForEach(s => s.Update());
         }
 
+        private void ShouldChaseOrFlee()
+        {
+            UpdateStateStatus(FleeState, (GetPriority(FleeState.FuzzyValue()) == Priority.High));
+            UpdateStateStatus(ChaseState, (ChaseState.FuzzyValue() == 1.0f && !ActiveStates.Contains(FleeState)));
+        }
+
         private void ShouldPatrol()
         {
             UpdateStateStatus(PatrolState, (PatrolState.FuzzyValue() == 1.0f));
@@ -52,36 +58,6 @@ namespace FuSM
         private void ShouldAttack()
         {
             UpdateStateStatus(AttackState, (AttackState.FuzzyValue() == 1.0f));
-        }
-
-        private void ShouldChaseOrFlee()
-        {
-            float chaseVal = ChaseState.FuzzyValue();
-            float fleeVal = FleeState.FuzzyValue();
-
-            bool shouldFlee = (GetPriority(fleeVal) == Priority.High);
-            bool shouldChase = (chaseVal == 1.0f && !shouldFlee);
-
-            UpdateStateStatus(ChaseState, shouldChase);
-            UpdateStateStatus(FleeState, shouldFlee);
-        }
-
-        public Priority GetPriority(float fuzzyValue)
-        {
-            float low = TriangularFuzzyNumber(fuzzyValue, 0.0f, 0.0f, 0.3f);
-            float medium = TriangularFuzzyNumber(fuzzyValue, 0.2f, 0.5f, 0.2f);
-            float high = TriangularFuzzyNumber(fuzzyValue, 0.3f, 1.0f, 0.0f);
-
-            float max = Mathf.Max(low, Mathf.Max(medium, high)); // Select the one of highest value (highest priority)
-
-            if (low == max)
-                return Priority.Low;
-            if (medium == max)
-                return Priority.Medium;
-            if (high == max)
-                return Priority.High;
-
-            return Priority.Low;
         }
 
         private void UpdateStateStatus(FuzzyState state, bool status)
@@ -102,6 +78,24 @@ namespace FuSM
                     state.Exit();
                 }
             }
+        }
+
+        public Priority GetPriority(float fuzzyValue)
+        {
+            float low = TriangularFuzzyNumber(fuzzyValue, 0.0f, 0.0f, 0.3f);
+            float medium = TriangularFuzzyNumber(fuzzyValue, 0.3f, 0.5f, 0.3f);
+            float high = TriangularFuzzyNumber(fuzzyValue, 0.3f, 1.0f, 0.0f);
+
+            float max = Mathf.Max(low, Mathf.Max(medium, high)); // Select the one of highest value (highest priority)
+
+            if (low == max)
+                return Priority.Low;
+            if (medium == max)
+                return Priority.Medium;
+            if (high == max)
+                return Priority.High;
+
+            return Priority.Low;
         }
 
         private float TriangularFuzzyNumber(float x, float lhs, float med, float rhs)
