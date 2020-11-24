@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace DT
 {
@@ -51,7 +48,7 @@ namespace DT
         }
 
         private bool IsTargetFound()     => (Target != null);
-        private bool Flee()              => (Health <= (StartHealth * FleeBoundary));
+        private bool Flee()              => (Health < (StartHealth * FleeBoundary));
         private bool IsTargetVisible()   => (WithinViewRange(Target) && WithinViewAngle(Target));
         private bool WithinAttackRange()
         {

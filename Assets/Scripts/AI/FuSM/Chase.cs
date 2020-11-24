@@ -7,8 +7,9 @@ namespace FuSM
     {
         private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
+        private Rigidbody m_RB;
 
-        public override float FuzzyValue()
+        public override float ActivationLevel()
         {
             if (m_Context.Target != null)
             {
@@ -16,8 +17,13 @@ namespace FuSM
                 GameObject obj = m_Context.gameObject;
 
                 float distToTarget = (target.transform.position - obj.transform.position).magnitude;
+                float appRange = m_Context.ApproachRange;
 
-                return (distToTarget > m_Context.AttackRange) ? 1.0f : 0.0f;
+                m_ActivationLevel = ((distToTarget - appRange) / (m_Context.ViewRange - appRange));
+
+                BoundsCheck();
+
+                return m_ActivationLevel;
             }
 
             return 0.0f;
@@ -27,6 +33,7 @@ namespace FuSM
         {
             m_Context = context;
             m_Agent = context.Agent;
+            m_RB = context.RB;
         }
 
         public override void Enter()
@@ -36,7 +43,10 @@ namespace FuSM
 
         public override void Update()
         {
-            m_Agent.SetDestination(m_Context.Target.transform.position);
+            m_Agent.destination = m_Context.Target.transform.position;
+
+            m_RB.velocity = m_Agent.velocity * m_ActivationLevel;
+            m_Agent.nextPosition = m_Context.transform.position;
         }
 
         public override void Exit()

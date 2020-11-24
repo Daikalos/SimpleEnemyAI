@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace FSM
@@ -60,7 +59,7 @@ namespace FSM
             return navHit.position;
         }
 
-        public bool Flee() => (Health <= (StartHealth * FleeBoundary));
+        public bool Flee() => (Health < (StartHealth * FleeBoundary));
         public bool IsTargetVisible(GameObject target) => (WithinViewRange(target) && WithinViewAngle(target));
         public bool WithinViewRange(GameObject target)
         {
@@ -73,6 +72,11 @@ namespace FSM
             float withinAngle = Vector3.Dot(dir, transform.forward); // 1 = Looking at, -1 = Opposite direction
 
             return (withinAngle > ViewAngle);
+        }
+        public bool WithinApproachRange(GameObject target)
+        {
+            float distanceTo = (target.transform.position - transform.position).magnitude;
+            return (distanceTo < ApproachRange);
         }
         public bool WithinAttackRange(GameObject target)
         {

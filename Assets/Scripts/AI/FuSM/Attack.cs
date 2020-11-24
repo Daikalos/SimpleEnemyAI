@@ -7,11 +7,9 @@ namespace FuSM
     public class Attack : FuzzyState
     {
         private FuSM_Context m_Context;
-        private NavMeshAgent m_Agent;
-
         private Coroutine m_AttackCoroutine;
 
-        public override float FuzzyValue()
+        public override float ActivationLevel()
         {
             if (m_Context.Target != null)
             {
@@ -20,7 +18,7 @@ namespace FuSM
 
                 float distToTarget = (target.transform.position - obj.transform.position).magnitude;
 
-                return (distToTarget <= m_Context.AttackRange) ? 1.0f : 0.0f;
+                return m_ActivationLevel = (distToTarget <= m_Context.AttackRange) ? 1.0f : 0.0f;
             }
 
             return 0.0f;
@@ -29,16 +27,11 @@ namespace FuSM
         public override void Init(FuSM_Context context)
         {
             m_Context = context;
-            m_Agent = context.Agent;
-
             m_AttackCoroutine = null;
         }
 
         public override void Enter()
         {
-            m_Agent.isStopped = true;
-            m_Agent.ResetPath();
-
             m_AttackCoroutine = m_Context.StartCoroutine(FireAtTarget());
         }
 

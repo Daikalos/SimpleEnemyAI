@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Enemy : MonoBehaviour
 {
     #region Variables
+
     [SerializeField, Range(1, 20)]
     private int m_Health = 15;
     [SerializeField, Range(0.0f, 50.0f)]
@@ -13,12 +14,14 @@ public class Enemy : MonoBehaviour
     [SerializeField, Range(0.0f, 1.0f)]
     private float m_ViewAngle = 0.6f;
     [SerializeField, Range(0.0f, 25.0f)]
+    private float m_ApproachRange = 4.5f;
+    [SerializeField, Range(0.0f, 25.0f)]
     private float m_AttackRange = 5.0f;
     [SerializeField, Range(0.0f, 5.0f)]
     private float m_AttackRate = 2.5f;
     [SerializeField, Range(0.0f, 8.0f), Tooltip("How fast this rotates towards target when attacking")]
     private float m_RotationSpeed = 4.5f;
-    [SerializeField, Range(0.0f, 1.0f), Tooltip("the limit on health before the enemy attempts to flee")]
+    [SerializeField, Range(0.0f, 1.0f), Tooltip("the minimum health before the enemy attempts to flee")]
     private float m_FleeBoundary = 0.4f;
 
     [SerializeField]
@@ -32,32 +35,39 @@ public class Enemy : MonoBehaviour
 
     public List<GameObject> Targets { get; } = new List<GameObject>();
     public NavMeshAgent Agent { get; private set; } = null;
+    public Collider Collider { get; private set; } = null;
+    public Rigidbody RB { get; private set; } = null;
     public GameObject Target { get; private set; } = null;
     public GameObject Muzzle => m_Muzzle;
     public GameObject Bullet => m_Bullet;
 
+    public int Health => m_Health;
     public float ViewRange => m_ViewRange;
     public float ViewAngle => m_ViewAngle;
+    public float ApproachRange => m_ApproachRange;
     public float AttackRange => m_AttackRange;
     public float AttackRate => m_AttackRate;
     public float RotationSpeed => m_RotationSpeed;
     public float FleeBoundary => m_FleeBoundary;
 
-    public int Health => m_Health;
     public int StartHealth { get; set; }
+    public float StartSpeed { get; set; }
 
     #endregion
 
     protected virtual void Awake()
     {
-        StartHealth = m_Health;
-
-        Agent = GetComponent<NavMeshAgent>();
         GameObject.FindGameObjectsWithTag("Enemy").ToList().ForEach(t =>
         {
             if (!t.Equals(this))
                 Targets.Add(t);
         });
+        Agent = GetComponent<NavMeshAgent>();
+        Collider = GetComponent<Collider>();
+        RB = GetComponent<Rigidbody>();
+
+        StartHealth = m_Health;
+        StartSpeed = Agent.speed;
     }
 
     public virtual void TakeDamage()

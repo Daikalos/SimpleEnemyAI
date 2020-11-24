@@ -10,25 +10,31 @@ namespace FuSM
     {
         private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
+        private Rigidbody m_RB;
 
         private Transform[] m_Waypoints;
+        private Transform m_Waypoint;
 
-        public override float FuzzyValue()
+        public override float ActivationLevel()
         {
             float health = m_Context.Health;
             float startHealth = m_Context.StartHealth;
 
-            float minHealth = m_Context.StartHealth * m_Context.FleeBoundary;
+            float minHealth = startHealth * m_Context.FleeBoundary;
+            float upperHealth = startHealth - minHealth;
 
-            float fuzzyValue = ((health - minHealth) / (startHealth - minHealth));
+            m_ActivationLevel = 1.0f - (health - minHealth / upperHealth - minHealth);
 
-            return (1.0f - fuzzyValue);
+            BoundsCheck();
+
+            return m_ActivationLevel;
         }
 
         public override void Init(FuSM_Context context)
         {
             m_Context = context;
             m_Agent = context.Agent;
+            m_RB = context.RB;
 
             m_Waypoints = GameObject.FindGameObjectsWithTag("Waypoint").Select(w => w.transform).ToArray();
         }
@@ -36,15 +42,17 @@ namespace FuSM
         public override void Enter()
         {
             m_Agent.isStopped = false;
-            m_Agent.SetDestination(RandomWaypoint().position);
+            m_Waypoint = RandomWaypoint();
         }
 
         public override void Update()
         {
-            if (m_Agent.pathPending)
-                return;
+            m_Agent.destination = m_Waypoint.position;
 
-            if (m_Agent.remainingDistance < float.Epsilon)
+            m_RB.velocity = m_Agent.velocity * m_ActivationLevel;
+            m_Agent.nextPosition = m_Context.transform.position;
+
+            if (m_Agent.remainingDistance < 0.1f)
             {
                 m_Context.StartHealth = m_Context.Health;
             }

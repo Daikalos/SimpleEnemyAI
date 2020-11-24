@@ -29,7 +29,7 @@ namespace FSM
                     return;
             }
 
-            if (m_Context.WithinAttackRange(target))
+            if (m_Context.WithinApproachRange(target))
             {
                 if (m_Context.TransitionTo(m_Context.AttackState)) 
                     return;

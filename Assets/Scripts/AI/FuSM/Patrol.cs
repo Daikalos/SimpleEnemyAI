@@ -10,16 +10,18 @@ namespace FuSM
     {
         private FuSM_Context m_Context;
         private NavMeshAgent m_Agent;
+        private Rigidbody m_RB;
 
-        public override float FuzzyValue()
+        public override float ActivationLevel()
         {
-            return (m_Context.Target == null) ? 1.0f : 0.0f;
+            return m_ActivationLevel = (m_Context.Target == null) ? 1.0f : 0.0f;
         }
 
         public override void Init(FuSM_Context context)
         {
             m_Context = context;
             m_Agent = context.Agent;
+            m_RB = context.RB;
         }
 
         public override void Enter()
@@ -28,10 +30,25 @@ namespace FuSM
             m_Agent.SetDestination(FuSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
         }
 
-        public override void Update() // Whilst patrolling, wander and search
+        public override void Update()
         {
+            UpdateAgent();
+
             Wander();
-            SearchForTarget(); // If target found
+            SearchForTarget();
+        }
+
+        private void UpdateAgent()
+        {
+            if (m_Agent.velocity.sqrMagnitude > Mathf.Epsilon)
+            {
+                m_RB.rotation = Quaternion.Slerp(m_RB.rotation,
+                    Quaternion.LookRotation(m_Agent.velocity.normalized),
+                    4.0f * Time.deltaTime);
+            }
+
+            m_RB.velocity = m_Agent.velocity;
+            m_Agent.nextPosition = m_Context.transform.position;
         }
 
         public override void Exit()
@@ -44,7 +61,7 @@ namespace FuSM
             if (m_Agent.pathPending)
                 return;
 
-            if (m_Agent.remainingDistance > float.Epsilon)
+            if (m_Agent.remainingDistance > 0.1f)
                 return;
 
             m_Agent.SetDestination(FuSM_Context.RandomPoint(Vector3.zero, 25.0f, -1));
