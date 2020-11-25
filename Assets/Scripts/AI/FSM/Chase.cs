@@ -5,10 +5,10 @@ namespace FSM
 {
     public class Chase : State
     {
-        private FSM_Context m_Context;
+        private FSM_AI m_Context;
         private NavMeshAgent m_Agent;
 
-        public override void Init(FSM_Context context)
+        public override void Init(FSM_AI context)
         {
             m_Context = context;
             m_Agent = context.Agent;
@@ -28,14 +28,13 @@ namespace FSM
                 if (m_Context.TransitionTo(m_Context.PatrolState)) 
                     return;
             }
-
-            if (m_Context.WithinApproachRange(target))
+            else if (m_Context.WithinApproachRange(target))
             {
                 if (m_Context.TransitionTo(m_Context.AttackState)) 
                     return;
             }
 
-            m_Agent.SetDestination(target.transform.position);
+            m_Agent.destination = target.transform.position;
         }
 
         public override void Exit()

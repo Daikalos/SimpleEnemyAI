@@ -12,7 +12,7 @@ namespace DT
 
         private Transform m_Waypoint = null;
 
-        public Flee(DT_Context context) : base(context)
+        public Flee(DT_AI context) : base(context)
         {
             m_Agent = context.Agent;
             m_Waypoints = GameObject.FindGameObjectsWithTag("Waypoint").Select(w => w.transform).ToArray();

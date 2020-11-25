@@ -6,7 +6,9 @@ namespace FuSM
 {
     public class Attack : FuzzyState
     {
-        private FuSM_Context m_Context;
+        private FuSM_AI m_Context;
+        private Rigidbody m_RB;
+
         private Coroutine m_AttackCoroutine;
 
         public override float ActivationLevel()
@@ -18,15 +20,17 @@ namespace FuSM
 
                 float distToTarget = (target.transform.position - obj.transform.position).magnitude;
 
-                return m_ActivationLevel = (distToTarget <= m_Context.AttackRange) ? 1.0f : 0.0f;
+                return m_ActivationLevel = ((distToTarget <= m_Context.AttackRange) ? 1.0f : 0.0f);
             }
 
             return 0.0f;
         }
 
-        public override void Init(FuSM_Context context)
+        public override void Init(FuSM_AI context)
         {
             m_Context = context;
+            m_RB = context.RB;
+
             m_AttackCoroutine = null;
         }
 
@@ -51,26 +55,19 @@ namespace FuSM
             {
                 yield return new WaitForSeconds(m_Context.AttackRate);
 
-                GameObject target = m_Context.Target;
-                GameObject muzzle = m_Context.Muzzle;
-                GameObject bullet = m_Context.Bullet;
-
-                Object.Instantiate(bullet, muzzle.transform.position,
-                    Quaternion.LookRotation(target.transform.position - muzzle.transform.position));
+                m_Context.CreateBullet(m_Context.Target);
             }
         }
 
         private void RotateTowardsTarget()
         {
             Transform target = m_Context.Target.transform;
-            Transform obj = m_Context.gameObject.transform;
 
-            Vector3 lookDir = (target.position - obj.position);
-
+            Vector3 lookDir = (target.position - m_Context.transform.position);
             lookDir.y = 0;
 
             Quaternion rotate = Quaternion.LookRotation(lookDir);
-            obj.rotation = Quaternion.Slerp(obj.rotation, rotate, m_Context.RotationSpeed * Time.deltaTime);
+            m_RB.rotation = Quaternion.Slerp(m_RB.rotation, rotate, m_Context.RotationSpeed * Time.deltaTime);
         }
     }
 }

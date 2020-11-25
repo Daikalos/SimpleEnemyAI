@@ -13,6 +13,8 @@ public class Bullet : MonoBehaviour
     /// </summary>
     public bool ObjectCollision { get; private set; } = false;
 
+    public GameObject Owner { get; set; } = null;
+
     private void Awake()
     {
         Destroy(gameObject, 10.0f);
@@ -29,8 +31,7 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         //Used to prevent bullet colliding with target when behind a object
-        ObjectCollision = (Physics.Raycast(transform.position, transform.forward, out RaycastHit objectHit, m_Rigidbody.velocity.magnitude * Time.deltaTime, 1 << 8));
-        
+        ObjectCollision = (Physics.Raycast(transform.position, transform.forward, out RaycastHit objectHit, m_Rigidbody.velocity.magnitude * Time.deltaTime, LayerMask.GetMask("Environment")));     
         if (ObjectCollision)
         {
             //Set position to collision point to provide better visual feedback on where bullet collided with object
@@ -46,7 +47,7 @@ public class Bullet : MonoBehaviour
         {
             if (other.CompareTag("Enemy"))
             {
-                other.GetComponent<Enemy>().TakeDamage();
+                other.GetComponent<Enemy>().TakeDamage(Owner);
                 DestroyBullet();
             }
         }

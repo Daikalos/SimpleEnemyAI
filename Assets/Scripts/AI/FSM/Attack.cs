@@ -8,12 +8,12 @@ namespace FSM
 
     public class Attack : State
     {
-        private FSM_Context m_Context;
+        private FSM_AI m_Context;
         private NavMeshAgent m_Agent;
 
         private Coroutine m_AttackCoroutine;
 
-        public override void Init(FSM_Context context)
+        public override void Init(FSM_AI context)
         {
             m_Context = context;
             m_Agent = context.Agent;
@@ -38,14 +38,12 @@ namespace FSM
                 if (m_Context.TransitionTo(m_Context.PatrolState))
                     return;
             }
-
-            if (m_Context.Flee())
+            else if (m_Context.Flee())
             {
                 if (m_Context.TransitionTo(m_Context.FleeState))
                     return;
             }
-
-            if (!m_Context.WithinAttackRange(target))
+            else if (!m_Context.WithinAttackRange(target))
             {
                 if (m_Context.TransitionTo(m_Context.ChaseState))
                     return;
@@ -65,12 +63,7 @@ namespace FSM
             {
                 yield return new WaitForSeconds(m_Context.AttackRate);
 
-                GameObject target = m_Context.Target;
-                GameObject muzzle = m_Context.Muzzle;
-                GameObject bullet = m_Context.Bullet;
-
-                Object.Instantiate(bullet, muzzle.transform.position,
-                    Quaternion.LookRotation(target.transform.position - muzzle.transform.position));
+                m_Context.CreateBullet(m_Context.Target);
             }
         }
 

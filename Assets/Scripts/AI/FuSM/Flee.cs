@@ -8,7 +8,7 @@ namespace FuSM
 
     public class Flee : FuzzyState
     {
-        private FuSM_Context m_Context;
+        private FuSM_AI m_Context;
         private NavMeshAgent m_Agent;
         private Rigidbody m_RB;
 
@@ -21,16 +21,16 @@ namespace FuSM
             float startHealth = m_Context.StartHealth;
 
             float minHealth = startHealth * m_Context.FleeBoundary;
-            float upperHealth = startHealth - minHealth;
+            float upperHealth = startHealth - (minHealth / 2);
 
-            m_ActivationLevel = 1.0f - (health - minHealth / upperHealth - minHealth);
+            m_ActivationLevel = 1.0f - ((health - minHealth) / (upperHealth - minHealth));
 
             BoundsCheck();
 
             return m_ActivationLevel;
         }
 
-        public override void Init(FuSM_Context context)
+        public override void Init(FuSM_AI context)
         {
             m_Context = context;
             m_Agent = context.Agent;
@@ -41,7 +41,6 @@ namespace FuSM
 
         public override void Enter()
         {
-            m_Agent.isStopped = false;
             m_Waypoint = RandomWaypoint();
         }
 
@@ -49,7 +48,17 @@ namespace FuSM
         {
             m_Agent.destination = m_Waypoint.position;
 
-            m_RB.velocity = m_Agent.velocity * m_ActivationLevel;
+            if (m_Context.Target == null || !m_Context.IsTargetVisible(m_Context.Target))
+            {
+                if (m_Agent.velocity.sqrMagnitude > Mathf.Epsilon)
+                {
+                    m_RB.rotation = Quaternion.Slerp(m_RB.rotation,
+                        Quaternion.LookRotation(m_Agent.velocity.normalized),
+                        m_Context.RotationSpeed * m_ActivationLevel * Time.deltaTime);
+                }
+            }
+
+            m_RB.velocity += m_Agent.velocity * m_ActivationLevel;
             m_Agent.nextPosition = m_Context.transform.position;
 
             if (m_Agent.remainingDistance < 0.1f)

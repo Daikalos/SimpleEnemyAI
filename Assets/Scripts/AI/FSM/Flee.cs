@@ -8,12 +8,12 @@ namespace FSM
 
     public class Flee : State
     {
-        private FSM_Context m_Context;
+        private FSM_AI m_Context;
         private NavMeshAgent m_Agent;
 
         private Transform[] m_Waypoints;
 
-        public override void Init(FSM_Context context)
+        public override void Init(FSM_AI context)
         {
             m_Context = context;
             m_Agent = context.Agent;

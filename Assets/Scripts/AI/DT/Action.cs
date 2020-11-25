@@ -6,9 +6,9 @@ namespace DT
 {
     public abstract class Action : Node
     {
-        protected DT_Context Context { get; }
+        protected DT_AI Context { get; }
 
-        public Action(DT_Context context)
+        public Action(DT_AI context)
         {
             Context = context;
         }

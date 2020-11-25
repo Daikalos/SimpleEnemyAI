@@ -12,7 +12,7 @@ namespace DT
             m_AttackDelay,
             m_AttackTimer;
 
-        public Attack(DT_Context context) : base(context)
+        public Attack(DT_AI context) : base(context)
         {
             m_Agent = context.Agent;
             m_AttackTimer = m_AttackDelay = context.AttackRate;
@@ -38,7 +38,6 @@ namespace DT
             Transform obj = Context.gameObject.transform;
 
             Vector3 lookDir = (target.position - obj.position);
-
             lookDir.y = 0;
 
             Quaternion rotate = Quaternion.LookRotation(lookDir);
@@ -51,12 +50,7 @@ namespace DT
 
             if (m_AttackTimer <= 0)
             {
-                GameObject target = Context.Target;
-                GameObject muzzle = Context.Muzzle;
-                GameObject bullet = Context.Bullet;
-
-                Object.Instantiate(bullet, muzzle.transform.position,
-                    Quaternion.LookRotation(target.transform.position - muzzle.transform.position));
+                Context.CreateBullet(Context.Target);
 
                 m_AttackTimer = m_AttackDelay;
             }

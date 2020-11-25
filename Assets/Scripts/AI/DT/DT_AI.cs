@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace DT
 {
-    public class DT_Context : Enemy
+    public class DT_AI : Enemy
     {
-        private Decision m_Root;
+        private DecisionTree m_DecisionTree;
 
         protected override void Awake()
         {
@@ -16,7 +16,9 @@ namespace DT
         {
             // Construct Decision Tree
 
-            m_Root = new Decision(IsTargetFound);
+            m_DecisionTree = new DecisionTree();
+
+            Decision isFound = new Decision(IsTargetFound);
 
             Decision shouldFlee = new Decision(Flee);
             Decision isVisible = new Decision(IsTargetVisible);
@@ -27,29 +29,30 @@ namespace DT
             Chase chase = new Chase(this);
             Flee flee = new Flee(this);
 
-            m_Root.TrueNode = shouldFlee;
-            m_Root.FalseNode = patrol;
+            m_DecisionTree.AssignRoot(isFound);
 
-            shouldFlee.TrueNode = flee;
-            shouldFlee.FalseNode = isVisible;
+            m_DecisionTree.AssignTrueNode (isFound, shouldFlee);
+            m_DecisionTree.AssignFalseNode(isFound, patrol);
 
-            isVisible.TrueNode = inRange;
-            isVisible.FalseNode = chase;
+            m_DecisionTree.AssignTrueNode (shouldFlee, flee);
+            m_DecisionTree.AssignFalseNode(shouldFlee, isVisible);
 
-            inRange.TrueNode = attack;
-            inRange.FalseNode = chase;
+            m_DecisionTree.AssignTrueNode (isVisible, inRange);
+            m_DecisionTree.AssignFalseNode(isVisible, chase);
+
+            m_DecisionTree.AssignTrueNode (inRange, attack);
+            m_DecisionTree.AssignFalseNode(inRange, chase);
         }
 
 
         private void Update()
         {
-            if (!m_Root.Evaluate())
-                Debug.LogException(new NullReferenceException("Decision Tree is not correctly constructed"), this);
+            m_DecisionTree.Evaluate();
         }
 
         private bool IsTargetFound()     => (Target != null);
         private bool Flee()              => (Health < (StartHealth * FleeBoundary));
-        private bool IsTargetVisible()   => (WithinViewRange(Target) && WithinViewAngle(Target));
+        private bool IsTargetVisible()   => (WithinViewRange(Target) && WithinViewAngle(Target) && !BehindWall(Target));
         private bool WithinAttackRange()
         {
             float distanceTo = (Target.transform.position - transform.position).magnitude;
@@ -58,7 +61,7 @@ namespace DT
 
         public bool IsTargetVisible(GameObject target)
         {
-            return WithinViewRange(target) && WithinViewAngle(target);
+            return WithinViewRange(target) && WithinViewAngle(target) && !BehindWall(target);
         }
         public bool WithinViewRange(GameObject target)
         {
@@ -71,6 +74,11 @@ namespace DT
             float withinAngle = Vector3.Dot(dir, transform.forward); // 1 = Looking at, -1 = Opposite direction
 
             return (withinAngle > ViewAngle);
+        }
+        public bool BehindWall(GameObject target)
+        {
+            Vector3 direction = (target.transform.position - transform.position);
+            return Physics.Raycast(transform.position, direction, ViewRange, LayerMask.GetMask("Environment"));
         }
     }
 }

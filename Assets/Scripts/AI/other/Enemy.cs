@@ -7,8 +7,8 @@ public class Enemy : MonoBehaviour
 {
     #region Variables
 
-    [SerializeField, Range(1, 20)]
-    private int m_Health = 15;
+    [SerializeField, Range(1, 30)]
+    private int m_Health = 20;
     [SerializeField, Range(0.0f, 50.0f)]
     private float m_ViewRange = 10.0f;
     [SerializeField, Range(0.0f, 1.0f)]
@@ -38,8 +38,6 @@ public class Enemy : MonoBehaviour
     public Collider Collider { get; private set; } = null;
     public Rigidbody RB { get; private set; } = null;
     public GameObject Target { get; private set; } = null;
-    public GameObject Muzzle => m_Muzzle;
-    public GameObject Bullet => m_Bullet;
 
     public int Health => m_Health;
     public float ViewRange => m_ViewRange;
@@ -70,8 +68,10 @@ public class Enemy : MonoBehaviour
         StartSpeed = Agent.speed;
     }
 
-    public virtual void TakeDamage()
+    public virtual void TakeDamage(GameObject bulletOwner)
     {
+        SetTarget(bulletOwner); // Change target to the owner of the bullet
+
         m_Health -= 2;
         if (m_Health <= 0)
         {
@@ -94,5 +94,12 @@ public class Enemy : MonoBehaviour
             return;
 
         Target = target;
+    }
+
+    public void CreateBullet(GameObject target)
+    {
+        GameObject bullet = Instantiate(m_Bullet, m_Muzzle.transform.position,
+            Quaternion.LookRotation(target.transform.position - m_Muzzle.transform.position));
+        bullet.GetComponent<Bullet>().Owner = gameObject;
     }
 }

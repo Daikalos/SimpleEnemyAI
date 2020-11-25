@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
 using System.Collections.Generic;
 
-namespace FSM
+namespace FuSM
 {
-    public class FSM_Context : Enemy
+    public class FuSM_AI : Enemy
     {
-        private State m_CurrentState = null;
-
-        private readonly List<State> States = new List<State>();
+        private FuSM_Machine m_Machine;
 
         public readonly Patrol PatrolState = new Patrol();
         public readonly Attack AttackState = new Attack();
@@ -19,34 +18,25 @@ namespace FSM
         {
             base.Awake();
 
-            States.Add(PatrolState);
-            States.Add(AttackState);
-            States.Add(ChaseState);
-            States.Add(FleeState);
+            m_Machine = new FuSM_Machine();
 
-            States.ForEach(s => s.Init(this)); // Initialize each state
-        }
+            m_Machine.AddState(PatrolState);
+            m_Machine.AddState(AttackState);
+            m_Machine.AddState(ChaseState);
+            m_Machine.AddState(FleeState);
 
-        private void Start()
-        {
-            TransitionTo(PatrolState);
+            m_Machine.InitializeStates(this);
+
+            // Set to false to allow manual control over the transform
+            Agent.updatePosition = false;
+            Agent.updateRotation = false;
         }
 
         private void Update()
         {
-            m_CurrentState?.Update();
-        }
+            RB.velocity = Vector3.zero;
 
-        public bool TransitionTo(State state)
-        {
-            if (state == m_CurrentState || state == null)
-                return false;
-            
-            m_CurrentState?.Exit();
-            m_CurrentState = state;
-            m_CurrentState.Enter();
-
-            return true;
+            m_Machine.Update();
         }
 
         public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)
@@ -59,8 +49,7 @@ namespace FSM
             return navHit.position;
         }
 
-        public bool Flee() => (Health < (StartHealth * FleeBoundary));
-        public bool IsTargetVisible(GameObject target) => (WithinViewRange(target) && WithinViewAngle(target));
+        public bool IsTargetVisible(GameObject target) => (WithinViewRange(target) && WithinViewAngle(target) && !BehindWall(target));
         public bool WithinViewRange(GameObject target)
         {
             float distanceTo = (target.transform.position - transform.position).magnitude;
@@ -73,15 +62,10 @@ namespace FSM
 
             return (withinAngle > ViewAngle);
         }
-        public bool WithinApproachRange(GameObject target)
+        public bool BehindWall(GameObject target)
         {
-            float distanceTo = (target.transform.position - transform.position).magnitude;
-            return (distanceTo < ApproachRange);
-        }
-        public bool WithinAttackRange(GameObject target)
-        {
-            float distanceTo = (target.transform.position - transform.position).magnitude;
-            return (distanceTo < AttackRange);
+            Vector3 direction = (target.transform.position - transform.position);
+            return Physics.Raycast(transform.position, direction, ViewRange, LayerMask.GetMask("Environment"));
         }
     }
 }

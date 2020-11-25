@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4800479570394642045}
   - component: {fileID: 4800479570394642044}
   - component: {fileID: 4800479570394642040}
-  - component: {fileID: 4800479571119139464}
+  - component: {fileID: 8753565077139927922}
   m_Layer: 0
   m_Name: AI_Enemy_Finite
   m_TagString: Enemy
@@ -229,7 +229,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &4800479571119139464
+--- !u!114 &8753565077139927922
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -238,13 +238,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4800479570394642047}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b84d507914ba61b469f6b6641229261b, type: 3}
+  m_Script: {fileID: 11500000, guid: c128e23115740194b8dfc38a1a91a569, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Health: 20
   m_ViewRange: 10
   m_ViewAngle: 0.6
-  m_ApproachRange: 4
+  m_ApproachRange: 4.5
   m_AttackRange: 5
   m_AttackRate: 2.5
   m_RotationSpeed: 4.5

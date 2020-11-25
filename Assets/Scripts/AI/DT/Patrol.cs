@@ -9,7 +9,7 @@ namespace DT
     {
         private readonly NavMeshAgent m_Agent;
 
-        public Patrol(DT_Context context) : base(context)
+        public Patrol(DT_AI context) : base(context)
         {
             m_Agent = context.Agent;
         }
@@ -58,30 +58,16 @@ namespace DT
 
         private List<GameObject> VisibleTargets()
         {
-            Vector3 position = Context.transform.position;
-
-            List<GameObject> visibleTargets = new List<GameObject>(); // Keep a list to store all enemies that is visible
-            foreach (GameObject target in Context.Targets) // Get all enemies within sight (not behind walls)
+            List<GameObject> visibleTargets = new List<GameObject>(); // Filter all visible targets based on view range and view angle
+            foreach (GameObject target in Context.Targets)
             {
-                Vector3 direction = (target.transform.position - position);
-                Physics.Raycast(position, direction, out RaycastHit hit);
-
-                if (hit.collider == null || !hit.collider.gameObject.CompareTag("Enemy"))
+                if (!Context.IsTargetVisible(target))
                     continue;
 
                 visibleTargets.Add(target);
             }
 
-            List<GameObject> filterTargets = new List<GameObject>(); // Filter all visible targets based on view range and view angle
-            foreach (GameObject target in visibleTargets)
-            {
-                if (!Context.IsTargetVisible(target))
-                    continue;
-
-                filterTargets.Add(target);
-            }
-
-            return filterTargets;
+            return visibleTargets;
         }
 
         private GameObject ClosestTarget()
