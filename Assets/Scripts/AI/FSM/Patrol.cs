@@ -18,11 +18,17 @@ namespace FSM
         public override void Enter()
         {
             m_Agent.isStopped = false;
-            m_Agent.SetDestination(FSM_AI.RandomPoint(Vector3.zero, 25.0f, -1));
+            m_Agent.destination = Enemy.RandomPoint(Vector3.zero, 25.0f, -1);
         }
 
         public override void Update() // Whilst patrolling, wander and search
         {
+            if (m_Context.Target != null)
+            {
+                if (m_Context.TransitionTo(m_Context.ChaseState))
+                    return;
+            }
+
             Wander();
             SearchForTarget(); // If target found
         }
@@ -37,7 +43,7 @@ namespace FSM
             if (m_Agent.remainingDistance > 0.1f)
                 return;
 
-            m_Agent.destination = FSM_AI.RandomPoint(Vector3.zero, 25.0f, -1);
+            m_Agent.destination = Enemy.RandomPoint(Vector3.zero, 25.0f, -1);
         }
 
         private void SearchForTarget()
@@ -47,8 +53,7 @@ namespace FSM
             if (closestTarget == null)
                 return;
 
-            m_Context.SetTarget(closestTarget);      
-            m_Context.TransitionTo(m_Context.ChaseState);
+            m_Context.SetTarget(closestTarget);
         }
     }
 }

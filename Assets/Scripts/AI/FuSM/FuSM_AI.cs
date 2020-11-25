@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace FuSM
 {
@@ -13,6 +12,14 @@ namespace FuSM
         public readonly Attack AttackState = new Attack();
         public readonly Chase  ChaseState  = new Chase();
         public readonly Flee   FleeState   = new Flee();
+
+        public bool IsTargetFound { get; private set; }
+        public bool IsTargetVisible { get; private set; }
+        public bool IsWithinViewRange { get; private set; }
+        public bool IsWithinViewAngle { get; private set; }
+        public bool IsBehindWall { get; private set; }
+        public bool IsWithinApproachRange { get; private set; }
+        public bool IsWithinAttackRange { get; private set; }
 
         protected override void Awake()
         {
@@ -34,38 +41,28 @@ namespace FuSM
 
         private void Update()
         {
-            RB.velocity = Vector3.zero;
-
+            Perception();
             m_Machine.Update();
         }
 
-        public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)
+        private void Perception()
         {
-            // Returns a random point on navigation mesh
+            IsTargetFound = (Target != null);
 
-            Vector3 randDirection = (Random.insideUnitSphere * distance) + origin;
-            NavMesh.SamplePosition(randDirection, out NavMeshHit navHit, distance, layermask);
+            if (!IsTargetFound)
+                return;
 
-            return navHit.position;
-        }
+            Vector3 dir = (Target.transform.position - transform.position).normalized;
 
-        public bool IsTargetVisible(GameObject target) => (WithinViewRange(target) && WithinViewAngle(target) && !BehindWall(target));
-        public bool WithinViewRange(GameObject target)
-        {
-            float distanceTo = (target.transform.position - transform.position).magnitude;
-            return (distanceTo < ViewRange);
-        }
-        public bool WithinViewAngle(GameObject target)
-        {
-            Vector3 dir = (target.transform.position - transform.position).normalized;
-            float withinAngle = Vector3.Dot(dir, transform.forward); // 1 = Looking at, -1 = Opposite direction
+            float distTo = (Target.transform.position - transform.position).magnitude;
+            float withinAngle = Vector3.Dot(dir, transform.forward);
 
-            return (withinAngle > ViewAngle);
-        }
-        public bool BehindWall(GameObject target)
-        {
-            Vector3 direction = (target.transform.position - transform.position);
-            return Physics.Raycast(transform.position, direction, ViewRange, LayerMask.GetMask("Environment"));
+            IsWithinViewRange     = (distTo < ViewRange);
+            IsWithinViewAngle     = (withinAngle > ViewAngle);
+            IsBehindWall          = Physics.Raycast(transform.position, dir, ViewRange, LayerMask.GetMask("Environment"));
+            IsWithinApproachRange = (distTo < ApproachRange);
+            IsWithinAttackRange   = (distTo < AttackRange);
+            IsTargetVisible       = (IsWithinViewRange && IsWithinViewAngle && !IsBehindWall);
         }
     }
 }

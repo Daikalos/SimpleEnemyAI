@@ -12,7 +12,7 @@ namespace DT
 
         private Transform m_Waypoint = null;
 
-        public Flee(DT_AI context) : base(context)
+        public Flee(DecisionTree_AI context) : base(context)
         {
             m_Agent = context.Agent;
             m_Waypoints = GameObject.FindGameObjectsWithTag("Waypoint").Select(w => w.transform).ToArray();
@@ -29,13 +29,11 @@ namespace DT
             if (m_Waypoint == null)
             {
                 m_Waypoint = RandomWaypoint();
-                m_Agent.SetDestination(m_Waypoint.position);
+                m_Agent.destination = m_Waypoint.position;
             }
 
-            if (m_Agent.pathPending)
+            if (m_Agent.remainingDistance > float.Epsilon) 
                 return true;
-
-            if (m_Agent.remainingDistance > float.Epsilon) return true;
             else
             {
                 m_Waypoint = null;

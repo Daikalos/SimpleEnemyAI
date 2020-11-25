@@ -15,12 +15,7 @@ namespace FuSM
         {
             if (m_Context.Target != null)
             {
-                GameObject target = m_Context.Target;
-                GameObject obj = m_Context.gameObject;
-
-                float distToTarget = (target.transform.position - obj.transform.position).magnitude;
-
-                return m_ActivationLevel = ((distToTarget <= m_Context.AttackRange) ? 1.0f : 0.0f);
+                return m_ActivationLevel = ((m_Context.IsTargetFound && (m_Context.IsWithinAttackRange)) ? 1.0f : 0.0f);
             }
 
             return 0.0f;

@@ -1,4 +1,5 @@
-﻿using UnityEngine.AI;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 namespace DT
 {
@@ -6,7 +7,7 @@ namespace DT
     {
         private readonly NavMeshAgent m_Agent;
 
-        public Chase(DT_AI context) : base(context)
+        public Chase(DecisionTree_AI context) : base(context)
         {
             m_Agent = context.Agent;
         }
@@ -14,12 +15,9 @@ namespace DT
         public override bool Evaluate()
         {
             if (m_Agent.isStopped)
-            {
                 m_Agent.isStopped = false;
-                m_Agent.ResetPath();
-            }
 
-            m_Agent.SetDestination(Context.Target.transform.position);
+            m_Agent.destination = Context.Target.transform.position;
 
             return true;
         }

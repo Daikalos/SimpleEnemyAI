@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace DT
+﻿namespace DT
 {
     public abstract class Action : Node
     {
-        protected DT_AI Context { get; }
+        protected DecisionTree_AI Context { get; }
 
-        public Action(DT_AI context)
+        public Action(DecisionTree_AI context)
         {
             Context = context;
         }

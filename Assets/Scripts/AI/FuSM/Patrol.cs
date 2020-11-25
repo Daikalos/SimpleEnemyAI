@@ -14,7 +14,7 @@ namespace FuSM
 
         public override float ActivationLevel()
         {
-            return m_ActivationLevel = (m_Context.Target == null) ? 1.0f : 0.0f;
+            return m_ActivationLevel = (!m_Context.IsTargetFound) ? 1.0f : 0.0f;
         }
 
         public override void Init(FuSM_AI context)
@@ -27,7 +27,7 @@ namespace FuSM
         public override void Enter()
         {
             m_Agent.isStopped = false;
-            m_Agent.SetDestination(FuSM_AI.RandomPoint(Vector3.zero, 25.0f, -1));
+            m_Agent.destination = Enemy.RandomPoint(Vector3.zero, 25.0f, -1);
         }
 
         public override void Update()
@@ -47,7 +47,7 @@ namespace FuSM
                     m_Context.RotationSpeed * Time.deltaTime);
             }
 
-            m_RB.velocity += m_Agent.velocity;
+            m_RB.velocity = m_Agent.velocity;
             m_Agent.nextPosition = m_Context.transform.position;
         }
 
@@ -58,56 +58,20 @@ namespace FuSM
 
         private void Wander()
         {
-            if (m_Agent.pathPending)
-                return;
-
             if (m_Agent.remainingDistance > 0.1f)
                 return;
 
-            m_Agent.SetDestination(FuSM_AI.RandomPoint(Vector3.zero, 25.0f, -1));
+            m_Agent.destination = Enemy.RandomPoint(Vector3.zero, 25.0f, -1);
         }
 
         private void SearchForTarget()
         {
-            GameObject closestTarget = ClosestTarget();
+            GameObject closestTarget = m_Context.ClosestTarget();
 
             if (closestTarget == null)
                 return;
 
             m_Context.SetTarget(closestTarget);
-        }
-
-        private List<GameObject> VisibleTargets()
-        {
-            List<GameObject> visibleTargets = new List<GameObject>(); // Filter all visible targets based on view range and view angle
-            foreach (GameObject target in m_Context.Targets)
-            {
-                if (!m_Context.IsTargetVisible(target))
-                    continue;
-
-                visibleTargets.Add(target);
-            }
-
-            return visibleTargets;
-        }
-
-        private GameObject ClosestTarget()
-        {
-            GameObject result = null;
-            float minDistance = float.MaxValue;
-
-            foreach (GameObject target in VisibleTargets())
-            {
-                float distance = (target.transform.position - m_Context.transform.position).magnitude;
-
-                if (distance < minDistance)
-                {
-                    result = target;
-                    minDistance = distance;
-                }
-            }
-
-            return result;
         }
     }
 }

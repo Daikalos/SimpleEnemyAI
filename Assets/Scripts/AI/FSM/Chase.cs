@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.AI;
+﻿using UnityEngine.AI;
 
 namespace FSM
 {
@@ -21,20 +20,18 @@ namespace FSM
 
         public override void Update()
         {
-            GameObject target = m_Context.Target;
-
-            if (target == null)
+            if (!m_Context.IsTargetFound)
             {
                 if (m_Context.TransitionTo(m_Context.PatrolState)) 
                     return;
             }
-            else if (m_Context.WithinApproachRange(target))
+            else if (m_Context.IsWithinApproachRange)
             {
                 if (m_Context.TransitionTo(m_Context.AttackState)) 
                     return;
             }
 
-            m_Agent.destination = target.transform.position;
+            m_Agent.destination = m_Context.Target.transform.position;
         }
 
         public override void Exit()

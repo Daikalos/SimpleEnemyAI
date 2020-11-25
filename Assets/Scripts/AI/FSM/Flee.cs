@@ -24,16 +24,13 @@ namespace FSM
         public override void Enter()
         {
             m_Agent.isStopped = false;
-            m_Agent.SetDestination(RandomWaypoint().position);
+            m_Agent.destination = RandomWaypoint().position;
 
             m_Context.SetTarget(null);
         }
 
         public override void Update()
         {
-            if (m_Agent.pathPending)
-                return;
-
             if (m_Agent.remainingDistance <= float.Epsilon)
             {
                 if (m_Context.TransitionTo(m_Context.PatrolState))

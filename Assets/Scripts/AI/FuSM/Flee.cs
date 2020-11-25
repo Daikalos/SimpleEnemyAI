@@ -13,7 +13,6 @@ namespace FuSM
         private Rigidbody m_RB;
 
         private Transform[] m_Waypoints;
-        private Transform m_Waypoint;
 
         public override float ActivationLevel()
         {
@@ -21,7 +20,7 @@ namespace FuSM
             float startHealth = m_Context.StartHealth;
 
             float minHealth = startHealth * m_Context.FleeBoundary;
-            float upperHealth = startHealth - (minHealth / 2);
+            float upperHealth = startHealth - (minHealth * 0.75f);
 
             m_ActivationLevel = 1.0f - ((health - minHealth) / (upperHealth - minHealth));
 
@@ -41,14 +40,12 @@ namespace FuSM
 
         public override void Enter()
         {
-            m_Waypoint = RandomWaypoint();
+            m_Agent.destination = RandomWaypoint().position;
         }
 
         public override void Update()
         {
-            m_Agent.destination = m_Waypoint.position;
-
-            if (m_Context.Target == null || !m_Context.IsTargetVisible(m_Context.Target))
+            if (m_Context.Target == null)
             {
                 if (m_Agent.velocity.sqrMagnitude > Mathf.Epsilon)
                 {
@@ -58,7 +55,7 @@ namespace FuSM
                 }
             }
 
-            m_RB.velocity += m_Agent.velocity * m_ActivationLevel;
+            m_RB.velocity = m_Agent.velocity * m_ActivationLevel;
             m_Agent.nextPosition = m_Context.transform.position;
 
             if (m_Agent.remainingDistance < 0.1f)

@@ -31,19 +31,17 @@ namespace FSM
 
         public override void Update()
         {
-            GameObject target = m_Context.Target;
-
-            if (target == null)
+            if (!m_Context.IsTargetFound)
             {
                 if (m_Context.TransitionTo(m_Context.PatrolState))
                     return;
             }
-            else if (m_Context.Flee())
+            else if (m_Context.ShouldFlee)
             {
                 if (m_Context.TransitionTo(m_Context.FleeState))
                     return;
             }
-            else if (!m_Context.WithinAttackRange(target))
+            else if (!m_Context.IsWithinAttackRange)
             {
                 if (m_Context.TransitionTo(m_Context.ChaseState))
                     return;

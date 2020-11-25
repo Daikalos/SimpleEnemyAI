@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 namespace DT
@@ -12,7 +10,7 @@ namespace DT
             m_AttackDelay,
             m_AttackTimer;
 
-        public Attack(DT_AI context) : base(context)
+        public Attack(DecisionTree_AI context) : base(context)
         {
             m_Agent = context.Agent;
             m_AttackTimer = m_AttackDelay = context.AttackRate;
@@ -51,7 +49,6 @@ namespace DT
             if (m_AttackTimer <= 0)
             {
                 Context.CreateBullet(Context.Target);
-
                 m_AttackTimer = m_AttackDelay;
             }
         }

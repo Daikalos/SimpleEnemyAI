@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DT
 {
@@ -7,12 +6,23 @@ namespace DT
     {
         private Node m_Root;
 
-        public void Evaluate()
+        public bool Evaluate()
         {
             if (m_Root == null)
+            {
                 Debug.LogError("No root assigned");
-            else if (!m_Root.Evaluate())
-                Debug.LogError("Decision Tree is not correctly constructed");
+                return false;
+            }
+            else
+            {
+                if (!m_Root.Evaluate())
+                {
+                    Debug.LogError("Decision Tree is not correctly constructed");
+                    return false;
+                }
+
+                return true;
+            }
         }
 
         public void AssignRoot(Node root)

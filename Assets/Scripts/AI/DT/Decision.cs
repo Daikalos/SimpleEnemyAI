@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace DT
+﻿namespace DT
 {
     public class Decision : Node
     {

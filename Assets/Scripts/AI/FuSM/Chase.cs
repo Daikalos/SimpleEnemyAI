@@ -9,27 +9,14 @@ namespace FuSM
         private NavMeshAgent m_Agent;
         private Rigidbody m_RB;
 
-
         public override float ActivationLevel()
         {
-            if (m_Context.Target != null)
-            {
-                GameObject target = m_Context.Target;
-                GameObject obj = m_Context.gameObject;
+            float healthState = m_Context.FleeState.ActivationLevel();
 
-                float distToTarget = (target.transform.position - obj.transform.position).magnitude;
-                float appRange = m_Context.ApproachRange;
+            if (healthState > 0.0f) // If currently fleeing, don't attempt chase
+                return (m_ActivationLevel = 0.0f);
 
-                float healthState = m_Context.FleeState.ActivationLevel();
-
-                m_ActivationLevel = ((distToTarget > appRange) ? 1.0f : 0.0f) - healthState;
-
-                BoundsCheck();
-
-                return m_ActivationLevel;
-            }
-
-            return 0.0f;
+            return m_ActivationLevel = ((m_Context.IsTargetFound && !m_Context.IsWithinApproachRange) ? 1.0f : 0.0f);
         }
 
         public override void Init(FuSM_AI context)
@@ -52,10 +39,10 @@ namespace FuSM
             {
                 m_RB.rotation = Quaternion.Slerp(m_RB.rotation,
                     Quaternion.LookRotation(m_Agent.velocity.normalized),
-                    m_Context.RotationSpeed * m_ActivationLevel * Time.deltaTime);
+                    m_Context.RotationSpeed * Time.deltaTime);
             }
 
-            m_RB.velocity += m_Agent.velocity * m_ActivationLevel;
+            m_RB.velocity = m_Agent.velocity;
             m_Agent.nextPosition = m_Context.transform.position;
         }
 

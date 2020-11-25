@@ -13,6 +13,16 @@ namespace FSM
         public readonly Chase ChaseState = new Chase();
         public readonly Flee FleeState = new Flee();
 
+        public bool ShouldFlee { get; private set; }
+        public bool IsTargetFound { get; private set; }
+        public bool IsTargetVisible { get; private set; }
+        public bool IsWithinViewRange { get; private set; }
+        public bool IsWithinViewAngle { get; private set; }
+        public bool IsBehindWall { get; private set; }
+        public bool IsWithinApproachRange { get; private set; }
+        public bool IsWithinAttackRange { get; private set; }
+
+
         protected override void Awake()
         {
             base.Awake();
@@ -34,88 +44,34 @@ namespace FSM
 
         private void Update()
         {
+            Perception();
             m_Machine.Update();
+        }
+
+        private void Perception()
+        {
+            IsTargetFound = (Target != null);
+
+            if (!IsTargetFound)
+                return;
+
+            Vector3 dir = (Target.transform.position - transform.position).normalized;
+
+            float distTo = (Target.transform.position - transform.position).magnitude;
+            float withinAngle = Vector3.Dot(dir, transform.forward);
+
+            ShouldFlee            = (Health < (StartHealth * FleeBoundary));
+            IsWithinViewRange     = (distTo < ViewRange);
+            IsWithinViewAngle     = (withinAngle > ViewAngle);
+            IsBehindWall          = Physics.Raycast(transform.position, dir, ViewRange, LayerMask.GetMask("Environment"));
+            IsWithinApproachRange = (distTo < ApproachRange);
+            IsWithinAttackRange   = (distTo < AttackRange);
+            IsTargetVisible       = (IsWithinViewRange && IsWithinViewAngle && !IsBehindWall);
         }
 
         public bool TransitionTo(State state)
         {
             return m_Machine.TransitionTo(state);
-        }
-
-        public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)
-        {
-            // Returns a random point on navigation mesh
-
-            Vector3 randDirection = (Random.insideUnitSphere * distance) + origin;
-            NavMesh.SamplePosition(randDirection, out NavMeshHit navHit, distance, layermask);
-
-            return navHit.position;
-        }
-
-        public bool Flee() 
-        {
-            return (Health < (StartHealth * FleeBoundary));
-        }
-        public bool IsTargetVisible(GameObject target) 
-        { 
-            return (WithinViewRange(target) && WithinViewAngle(target) && !BehindWall(target)); 
-        }
-        public bool WithinViewRange(GameObject target)
-        {
-            float distanceTo = (target.transform.position - transform.position).magnitude;
-            return (distanceTo < ViewRange);
-        }
-        public bool WithinViewAngle(GameObject target)
-        {
-            Vector3 dir = (target.transform.position - transform.position).normalized;
-            float withinAngle = Vector3.Dot(dir, transform.forward); // 1 = Looking at, -1 = Opposite direction
-
-            return (withinAngle > ViewAngle);
-        }
-        public bool BehindWall(GameObject target)
-        {
-            Vector3 direction = (target.transform.position - transform.position);
-            return Physics.Raycast(transform.position, direction, ViewRange, LayerMask.GetMask("Environment"));
-        }
-        public bool WithinApproachRange(GameObject target)
-        {
-            float distanceTo = (target.transform.position - transform.position).magnitude;
-            return (distanceTo < ApproachRange);
-        }
-        public bool WithinAttackRange(GameObject target)
-        {
-            float distanceTo = (target.transform.position - transform.position).magnitude;
-            return (distanceTo < AttackRange);
-        }
-
-        public GameObject ClosestTarget()
-        {
-            GameObject result = null;
-            float minDistance = float.MaxValue;
-
-            foreach (GameObject target in VisibleTargets())
-            {
-                float distance = (target.transform.position - transform.position).magnitude;
-                if (distance < minDistance)
-                {
-                    result = target;
-                    minDistance = distance;
-                }
-            }
-            return result; // Return target of closest distance
-        }
-        public List<GameObject> VisibleTargets()
-        {
-            List<GameObject> visibleTargets = new List<GameObject>(); // Get all the current visible targets
-            foreach (GameObject target in Targets)
-            {
-                if (!IsTargetVisible(target))
-                    continue;
-
-                visibleTargets.Add(target);
-            }
-
-            return visibleTargets;
         }
     }
 }
