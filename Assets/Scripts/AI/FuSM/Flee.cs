@@ -45,7 +45,7 @@ namespace FuSM
 
         public override void Update()
         {
-            if (m_Context.Target == null)
+            if (m_Context.Target == null || !m_Context.IsWithinViewRange)
             {
                 if (m_Agent.velocity.sqrMagnitude > Mathf.Epsilon)
                 {
@@ -58,7 +58,7 @@ namespace FuSM
             m_RB.velocity = m_Agent.velocity * m_ActivationLevel;
             m_Agent.nextPosition = m_Context.transform.position;
 
-            if (m_Agent.remainingDistance < 0.1f)
+            if (m_Agent.remainingDistance < 0.5f)
             {
                 m_Context.StartHealth = m_Context.Health;
             }

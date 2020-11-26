@@ -13,12 +13,7 @@ namespace FuSM
 
         public override float ActivationLevel()
         {
-            if (m_Context.Target != null)
-            {
-                return m_ActivationLevel = ((m_Context.IsTargetFound && (m_Context.IsWithinAttackRange)) ? 1.0f : 0.0f);
-            }
-
-            return 0.0f;
+            return m_ActivationLevel = ((m_Context.IsTargetFound && (m_Context.IsWithinAttackRange)) ? 1.0f : 0.0f);
         }
 
         public override void Init(FuSM_AI context)
