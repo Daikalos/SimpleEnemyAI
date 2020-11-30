@@ -2,9 +2,9 @@
 {
     public abstract class Action : Node
     {
-        protected DecisionTree_AI Context { get; }
+        protected DT_AI Context { get; }
 
-        public Action(DecisionTree_AI context)
+        public Action(DT_AI context)
         {
             Context = context;
         }

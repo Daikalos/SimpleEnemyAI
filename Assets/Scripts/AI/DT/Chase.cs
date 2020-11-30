@@ -7,7 +7,7 @@ namespace DT
     {
         private readonly NavMeshAgent m_Agent;
 
-        public Chase(DecisionTree_AI context) : base(context)
+        public Chase(DT_AI context) : base(context)
         {
             m_Agent = context.Agent;
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DT
 {
-    public class DecisionTree_AI : Enemy
+    public class DT_AI : Enemy
     {
         private DecisionTree m_DecisionTree;
 

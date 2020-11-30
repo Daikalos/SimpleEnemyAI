@@ -10,7 +10,7 @@ namespace DT
             m_AttackDelay,
             m_AttackTimer;
 
-        public Attack(DecisionTree_AI context) : base(context)
+        public Attack(DT_AI context) : base(context)
         {
             m_Agent = context.Agent;
             m_AttackTimer = m_AttackDelay = context.AttackRate;
