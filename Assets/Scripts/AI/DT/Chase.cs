@@ -14,10 +14,11 @@ namespace DT
 
         public override bool Evaluate()
         {
-            if (m_Agent.isStopped)
+            if (m_Agent.isStopped) // If currently stopped, set to false so that we can move
                 m_Agent.isStopped = false;
 
-            m_Agent.destination = Context.Target.transform.position;
+            // Set current destination as Target to chase
+            m_Agent.destination = Context.Target.transform.position; 
 
             return true;
         }

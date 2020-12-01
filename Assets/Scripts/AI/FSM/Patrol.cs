@@ -30,7 +30,7 @@ namespace FSM
             }
 
             Wander();
-            SearchForTarget(); // If target found
+            SearchForTarget();
         }
 
         public override void Exit()

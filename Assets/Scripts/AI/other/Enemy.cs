@@ -35,7 +35,6 @@ public class Enemy : MonoBehaviour
 
     public List<GameObject> Targets { get; } = new List<GameObject>();
     public NavMeshAgent Agent { get; private set; } = null;
-    public Collider Collider { get; private set; } = null;
     public Rigidbody RB { get; private set; } = null;
     public GameObject Target { get; private set; } = null;
 
@@ -47,6 +46,15 @@ public class Enemy : MonoBehaviour
     public float AttackRate => m_AttackRate;
     public float RotationSpeed => m_RotationSpeed;
     public float FleeBoundary => m_FleeBoundary;
+
+    public bool ShouldFlee { get; private set; }
+    public bool IsTargetFound { get; private set; }
+    public bool IsTargetVisible { get; private set; }
+    public bool IsWithinViewRange { get; private set; }
+    public bool IsWithinViewAngle { get; private set; }
+    public bool IsBehindWall { get; private set; }
+    public bool IsWithinApproachRange { get; private set; }
+    public bool IsWithinAttackRange { get; private set; }
 
     public int StartHealth { get; set; }
     public float StartSpeed { get; set; }
@@ -61,11 +69,31 @@ public class Enemy : MonoBehaviour
                 Targets.Add(t);
         });
         Agent = GetComponent<NavMeshAgent>();
-        Collider = GetComponent<Collider>();
         RB = GetComponent<Rigidbody>();
 
         StartHealth = m_Health;
         StartSpeed = Agent.speed;
+    }
+
+    public void Perception()
+    {
+        IsTargetFound = (Target != null);
+
+        if (!IsTargetFound)
+            return;
+
+        Vector3 dir = (Target.transform.position - transform.position).normalized;
+
+        float distTo = (Target.transform.position - transform.position).magnitude;
+        float withinAngle = Vector3.Dot(dir, transform.forward);
+
+        ShouldFlee = (Health < (StartHealth * FleeBoundary));
+        IsWithinViewRange = (distTo < ViewRange);
+        IsWithinViewAngle = (withinAngle > ViewAngle);
+        IsBehindWall = Physics.Raycast(transform.position, dir, ViewRange, LayerMask.GetMask("Environment"));
+        IsWithinApproachRange = (distTo < ApproachRange);
+        IsWithinAttackRange = (distTo < AttackRange);
+        IsTargetVisible = (IsWithinViewRange && IsWithinViewAngle && !IsBehindWall);
     }
 
     public void TakeDamage(GameObject bulletOwner)
@@ -76,7 +104,7 @@ public class Enemy : MonoBehaviour
         if (m_Health <= 0)
         {
             Destroy(gameObject);
-            for (int i = Targets.Count - 1; i >= 0; --i)
+            for (int i = Targets.Count - 1; i >= 0; --i) // Remove this enemy from all other enemy target lists
             {
                 Enemy enemy = Targets[i].GetComponent<Enemy>();
 
@@ -96,11 +124,34 @@ public class Enemy : MonoBehaviour
         Target = target;
     }
 
-    public void CreateBullet(GameObject target)
+    public GameObject ClosestTarget()
     {
-        GameObject bullet = Instantiate(m_Bullet, m_Muzzle.transform.position,
-            Quaternion.LookRotation(target.transform.position - m_Muzzle.transform.position));
-        bullet.GetComponent<Bullet>().Owner = gameObject;
+        GameObject result = null;
+        float minDistance = float.MaxValue;
+
+        foreach (GameObject target in VisibleTargets())
+        {
+            float distance = (target.transform.position - transform.position).magnitude;
+            if (distance < minDistance)
+            {
+                result = target;
+                minDistance = distance;
+            }
+        }
+        return result;
+    }
+    public List<GameObject> VisibleTargets()
+    {
+        List<GameObject> visibleTargets = new List<GameObject>();
+        foreach (GameObject target in Targets)
+        {
+            if (!TargetVisible(target))
+                continue;
+
+            visibleTargets.Add(target);
+        }
+
+        return visibleTargets;
     }
 
     public static Vector3 RandomPoint(Vector3 origin, float distance, int layermask)
@@ -111,6 +162,13 @@ public class Enemy : MonoBehaviour
         NavMesh.SamplePosition(randDirection, out NavMeshHit navHit, distance, layermask);
 
         return navHit.position;
+    }
+
+    public void CreateBullet(GameObject target)
+    {
+        GameObject bullet = Instantiate(m_Bullet, m_Muzzle.transform.position,
+            Quaternion.LookRotation(target.transform.position - m_Muzzle.transform.position));
+        bullet.GetComponent<Bullet>().Owner = gameObject;
     }
 
     public bool TargetVisible(GameObject target)
@@ -143,35 +201,5 @@ public class Enemy : MonoBehaviour
     {
         float distanceTo = (target.transform.position - transform.position).magnitude;
         return (distanceTo < AttackRange);
-    }
-
-    public GameObject ClosestTarget()
-    {
-        GameObject result = null;
-        float minDistance = float.MaxValue;
-
-        foreach (GameObject target in VisibleTargets())
-        {
-            float distance = (target.transform.position - transform.position).magnitude;
-            if (distance < minDistance)
-            {
-                result = target;
-                minDistance = distance;
-            }
-        }
-        return result;
-    }
-    public List<GameObject> VisibleTargets()
-    {
-        List<GameObject> visibleTargets = new List<GameObject>(); // Filter all visible targets based on view range and view angle
-        foreach (GameObject target in Targets)
-        {
-            if (!TargetVisible(target))
-                continue;
-
-            visibleTargets.Add(target);
-        }
-
-        return visibleTargets;
     }
 }

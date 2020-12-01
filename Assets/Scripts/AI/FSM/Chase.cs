@@ -31,6 +31,7 @@ namespace FSM
                     return;
             }
 
+            // Set current destination as Target to chase
             m_Agent.destination = m_Context.Target.transform.position;
         }
 

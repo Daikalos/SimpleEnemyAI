@@ -13,7 +13,7 @@ namespace DT
 
             m_DecisionTree = new DecisionTree();
 
-            Decision isFound = new Decision(IsTargetFound);
+            Decision isFound = new Decision(TargetFound);
             Decision shouldFlee = new Decision(Flee);
             Decision inRange = new Decision(WithinAttackRange);
 
@@ -36,12 +36,13 @@ namespace DT
 
         private void Update()
         {
-            if (!m_DecisionTree.Evaluate())
-                Debug.LogError("Decision Tree is not correctly constructed");
+            Perception();
+            m_DecisionTree.Evaluate();
         }
 
-        private bool IsTargetFound()     => (Target != null);
-        private bool Flee()              => (Health < (StartHealth * FleeBoundary));
-        private bool WithinAttackRange() => (WithinApproachRange(Target));
+        // Wrap booleans in methods to pass as delegates for decision tree to evaluate
+        private bool TargetFound()       => IsTargetFound;
+        private bool Flee()              => ShouldFlee;
+        private bool WithinAttackRange() => IsWithinApproachRange;
     }
 }

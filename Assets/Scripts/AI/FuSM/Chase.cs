@@ -11,12 +11,10 @@ namespace FuSM
 
         public override float ActivationLevel()
         {
-            float healthState = m_Context.FleeState.ActivationLevel();
-
-            if (healthState > 0.0f) // If currently fleeing, don't attempt chase
+            if (m_Context.Machine.IsActive(m_Context.FleeState)) // If currently fleeing, don't attempt chase
                 return (m_ActivationLevel = 0.0f);
 
-            return m_ActivationLevel = ((m_Context.IsTargetFound && !m_Context.IsWithinApproachRange) ? 1.0f : 0.0f);
+            return (m_ActivationLevel = (m_Context.IsTargetFound && !m_Context.IsWithinApproachRange) ? 1.0f : 0.0f);
         }
 
         public override void Init(FuSM_AI context)
@@ -33,6 +31,7 @@ namespace FuSM
 
         public override void Update()
         {
+            // Set current destination as Target to chase
             m_Agent.destination = m_Context.Target.transform.position;
 
             if (m_Agent.velocity.sqrMagnitude > Mathf.Epsilon)

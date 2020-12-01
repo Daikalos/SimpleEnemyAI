@@ -32,6 +32,9 @@ namespace DT
                 m_Agent.destination = m_Waypoint.position;
             }
 
+            if (m_Agent.pathPending)
+                return true;
+
             if (m_Agent.remainingDistance > float.Epsilon) 
                 return true;
             else

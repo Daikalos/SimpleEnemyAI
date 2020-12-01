@@ -11,7 +11,7 @@ namespace FSM
         private FSM_AI m_Context;
         private NavMeshAgent m_Agent;
 
-        private Coroutine m_AttackCoroutine;
+        private Coroutine m_AttackCoroutine; // Uses a coroutine to fire bullets
 
         public override void Init(FSM_AI context)
         {

@@ -9,11 +9,11 @@ namespace FuSM
         private FuSM_AI m_Context;
         private Rigidbody m_RB;
 
-        private Coroutine m_AttackCoroutine;
+        private Coroutine m_AttackCoroutine; // Uses a coroutine to fire bullets
 
         public override float ActivationLevel()
         {
-            return m_ActivationLevel = ((m_Context.IsTargetFound && (m_Context.IsWithinAttackRange)) ? 1.0f : 0.0f);
+            return (m_ActivationLevel = (m_Context.IsTargetFound && m_Context.IsWithinAttackRange) ? 1.0f : 0.0f);
         }
 
         public override void Init(FuSM_AI context)

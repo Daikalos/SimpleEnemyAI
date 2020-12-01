@@ -18,7 +18,7 @@ namespace DT
 
         public override bool Evaluate()
         {
-            if (!m_Agent.isStopped)
+            if (!m_Agent.isStopped) // Make sure to stop agent when attacking
             {
                 m_Agent.isStopped = true;
                 m_Agent.ResetPath();
@@ -44,6 +44,7 @@ namespace DT
 
         private void FireAtTarget()
         {
+            // Kinda cheating, but reasonably works
             m_AttackTimer -= Time.deltaTime;
 
             if (m_AttackTimer <= 0)

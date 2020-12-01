@@ -19,8 +19,8 @@ namespace FuSM
             float health = m_Context.Health;
             float startHealth = m_Context.StartHealth;
 
-            float minHealth = startHealth * m_Context.FleeBoundary;
-            float upperHealth = startHealth - (minHealth * 0.75f);
+            float minHealth = startHealth * m_Context.FleeBoundary; // Lowest health before activation level reaches 1
+            float upperHealth = startHealth - (minHealth * 0.75f);  // Activation level activates when health is lower than upperHealth
 
             m_ActivationLevel = 1.0f - ((health - minHealth) / (upperHealth - minHealth));
 
@@ -40,12 +40,12 @@ namespace FuSM
 
         public override void Enter()
         {
-            m_Agent.destination = RandomWaypoint().position;
+            m_Agent.destination = RandomWaypoint().position; // Set random waypoint as destination, see map
         }
 
         public override void Update()
         {
-            if (m_Context.Target == null || !m_Context.IsWithinViewRange)
+            if (m_Context.Target == null || !m_Context.IsWithinAttackRange) // Whenever target is lost or no longer in range, rotate in headed direction
             {
                 if (m_Agent.velocity.sqrMagnitude > Mathf.Epsilon)
                 {
@@ -55,10 +55,10 @@ namespace FuSM
                 }
             }
 
-            m_RB.velocity = m_Agent.velocity * m_ActivationLevel;
+            m_RB.velocity = m_Agent.velocity * m_ActivationLevel; // Move depending on current activation level
             m_Agent.nextPosition = m_Context.transform.position;
 
-            if (m_Agent.remainingDistance < 0.5f)
+            if (m_Agent.remainingDistance < 0.5f) // When destination reached, reset health to exit flee state
             {
                 m_Context.StartHealth = m_Context.Health;
             }
@@ -66,7 +66,7 @@ namespace FuSM
 
         public override void Exit()
         {
-            m_Context.SetTarget(null);
+            m_Context.SetTarget(null); // When having successfully fled, reset target
         }
 
         private Transform RandomWaypoint()

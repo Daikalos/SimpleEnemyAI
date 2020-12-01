@@ -4,8 +4,6 @@ using UnityEngine.AI;
 
 namespace FuSM
 {
-    // Patrol as idle state until another enemy is found
-
     public class Patrol : FuzzyState
     {
         private FuSM_AI m_Context;
@@ -26,8 +24,8 @@ namespace FuSM
 
         public override void Enter()
         {
-            m_Agent.isStopped = false;
-            m_Agent.destination = Enemy.RandomPoint(Vector3.zero, 25.0f, -1);
+            m_Agent.isStopped = false; // If agent is stopped, set to false so it can move
+            m_Agent.destination = Enemy.RandomPoint(Vector3.zero, 25.0f, -1); // Set destination as random point on mesh
         }
 
         public override void Update()
@@ -61,6 +59,7 @@ namespace FuSM
             if (m_Agent.remainingDistance > 0.1f)
                 return;
 
+            // Set a new destination on mesh when current destination is reached
             m_Agent.destination = Enemy.RandomPoint(Vector3.zero, 25.0f, -1);
         }
 

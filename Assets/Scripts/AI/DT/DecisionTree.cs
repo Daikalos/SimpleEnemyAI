@@ -10,14 +10,14 @@ namespace DT
         {
             if (m_Root == null)
             {
-                Debug.LogError("No root assigned");
+                Debug.LogError("no root assigned");
                 return false;
             }
             else
             {
                 if (!m_Root.Evaluate())
                 {
-                    Debug.LogError("Decision Tree is not correctly constructed");
+                    Debug.LogError("something went wrong with evaluating the tree");
                     return false;
                 }
 
