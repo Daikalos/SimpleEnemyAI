@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour
         if (!IsTargetFound)
             return;
 
-        Vector3 dir = (Target.transform.position - transform.position).normalized;
+        Vector3 dir = (Target.transform.position - transform.position);
 
         float distTo = (Target.transform.position - transform.position).magnitude;
         float withinAngle = Vector3.Dot(dir, transform.forward);
@@ -90,7 +90,7 @@ public class Enemy : MonoBehaviour
         ShouldFlee = (Health < (StartHealth * FleeBoundary));
         IsWithinViewRange = (distTo < ViewRange);
         IsWithinViewAngle = (withinAngle > ViewAngle);
-        IsBehindWall = Physics.Raycast(transform.position, dir, ViewRange, LayerMask.GetMask("Environment"));
+        IsBehindWall = (Physics.Raycast(transform.position, dir, ViewRange, LayerMask.GetMask("Environment")));
         IsWithinApproachRange = (distTo < ApproachRange);
         IsWithinAttackRange = (distTo < AttackRange);
         IsTargetVisible = (IsWithinViewRange && IsWithinViewAngle && !IsBehindWall);
